@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+deepfake_env/
+env/
+.environment/
+.environment
+
+# VS Code settings
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Log files
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Environment variables or secrets
+.env
+*.env
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+
+# TensorBoard logs
+logs/
+runs/
+
+# Temporary files
+*.bak
+*.swp
+*~
+# dataset 
+DFDC/
+fakeavceleb/
