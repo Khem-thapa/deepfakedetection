@@ -41,5 +41,6 @@ runs/
 *.swp
 *~
 # dataset 
+dataset
 DFDC/
 fakeavceleb/
