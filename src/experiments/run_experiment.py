@@ -9,7 +9,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from data.dataloader import DataLoader
 from models.meso4 import Meso4Model
-from trainer.train_model import Trainer
 from utils.config_loader import ConfigLoader 
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 
@@ -48,13 +47,7 @@ def main():
     )
 
     # === Train ===
-    model.train(
-        X_train, y_train,
-        X_val, y_val,
-        callbacks=[checkpoint_cb, early_stop_cb],
-        epochs=EPOCHS,
-        batch_size=BATCH_SIZE
-    )
+    model.train(X_train, y_train, X_val, y_val, epochs=EPOCHS, batch_size=BATCH_SIZE)
 
     # === Save final weights (optional if checkpoint saves best) ===
     model.save(MODEL_SAVE_PATH)

@@ -30,6 +30,7 @@ X_train, X_val, y_train, y_val = loader.load_data()
 
 # === Load and Predict with Models ===
 custom_model = Meso4Model()
+custom_model.model.summary()
 custom_model.load(CUSTOM_WEIGHTS)
 y_pred_custom = (custom_model.predict(X_val) > 0.5).astype("int32")
 
