@@ -1,0 +1,84 @@
+import os
+import sys
+import argparse
+import numpy as np
+import pandas as pd
+from PIL import Image
+
+from sklearn.metrics import classification_report
+
+# Add parent of src to path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from models.meso4 import Meso4Model
+from data.dataloader import DataLoader
+from utils.config_loader import ConfigLoader
+
+# === Image Preprocessing ===
+def preprocess_image(image_path, image_size):
+    try:
+        print(f"[DEBUG] Image path: {image_path}")
+        print(f"[DEBUG] Resize to: {image_size}")
+        img = Image.open(image_path).convert("RGB")
+        img = img.resize(image_size)
+        img_array = np.array(img) / 255.0
+        return np.expand_dims(img_array, axis=0)  # Add batch dim
+    except Exception as e:
+        print(f"Error loading image: {e}")
+        return None
+
+# === Main Function ===
+def main(args):
+    config = ConfigLoader("src/config/config.yaml")
+
+    IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
+    CUSTOM_WEIGHTS = config.get("model.CUSTOM_WEIGHTS")
+    RESULTS_DIR = config.get("output.RESULT_DIR")
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+
+    # Load custom model
+    model = Meso4Model()
+    model.load(CUSTOM_WEIGHTS)
+
+    if args.image_path:
+        # === Predict from a single image ===
+        input_image = preprocess_image(args.image_path, IMAGE_SIZE)
+        if input_image is None:
+            print("Failed to process image.")
+            return
+
+        prediction = model.predict(input_image)[0][0]
+        predicted_label = int(prediction > 0.5)
+        label_str = "Fake" if predicted_label == 1 else "Real"
+        print(f"\nPrediction: {label_str} (Confidence: {prediction:.4f})")
+
+    else:
+        # === Predict on full validation set ===
+        REAL_DIR = config.get("data.REAL_DIR")
+        FAKE_DIR = config.get("data.FAKE_DIR")
+
+        loader = DataLoader(REAL_DIR, FAKE_DIR)
+        X_train, X_val, y_train, y_val = loader.load_data()
+
+        y_prob = model.predict(X_val)
+        y_pred = (y_prob > 0.5).astype("int32")
+
+        print("\n[Custom Model] Classification Report:")
+        print(classification_report(y_val, y_pred, target_names=["Real", "Fake"], zero_division=0))
+
+        # Save predictions
+        pred_df = pd.DataFrame({
+            "TrueLabel": y_val,
+            "PredictedProb": y_prob.flatten(),
+            "PredictedLabel": y_pred.flatten()
+        })
+        pred_df.to_csv(os.path.join(RESULTS_DIR, "custom_model_predictions.csv"), index=False)
+        print(f"\nPredictions saved to {os.path.join(RESULTS_DIR, 'custom_model_predictions.csv')}")
+
+# === CLI Arguments ===
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Custom Meso4 Deepfake Detection Prediction")
+    parser.add_argument("--image-path", type=str, help="Path to an image for single prediction")
+    args = parser.parse_args()
+
+    main(args)

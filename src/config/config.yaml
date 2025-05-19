@@ -1,7 +1,7 @@
 data:
   REAL_DIR: "dataset/DFDC/real_small/"
   FAKE_DIR: "dataset/DFDC/fake_small/"
-  IMAGE_SIZE: (256, 256)
+  IMAGE_SIZE: [256, 256]
 
 train:
   EPOCHS: 10
