@@ -15,3 +15,8 @@ output:
   RESULT_DIR: "results"
   MODEL_SAVE_PATH: "models/meso4.weights.h5"
   RESULT_CONFUSION_MATRIX: "results/confusion_matrix.png"
+  MODELS_PATH: "models"
+  
+
+mlflow:
+  EXPERIMENT_NAME: "Deepfake detection"

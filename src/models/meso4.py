@@ -63,9 +63,17 @@ class Meso4Model:
         return predictions
 
     def save(self, path):
-        self.model.save_weights(path)
-        print(f"Model weights saved to {path}")
+        if path.endswith(".weights.h5"):
+            self.model.save_weights(path)  # Ensure the path ends with .weights.h5
+            print(f"Model weights saved to {path}")
+        else:
+            self.model.save(path)  # This saves the full model
+            print(f"Model saved to {path}")
+
 
     def load(self, path):
         self.model.load_weights(path)
         print(f"Model weights loaded from {path}")
+
+    def summary(self, *args, **kwargs):
+        return self.model.summary(*args, **kwargs)
