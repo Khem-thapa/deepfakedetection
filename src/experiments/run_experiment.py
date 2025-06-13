@@ -11,6 +11,14 @@ from data.dataloader import DataLoader
 from models.meso4 import Meso4Model
 from utils.config_loader import ConfigLoader 
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    classification_report, roc_auc_score
+)
 import mlflow
 
 from utils.mlflow_util import start_mlflow_run_with_logging
@@ -80,14 +88,41 @@ def main():
     # === Train ===
     history = model.train(X_train, y_train, X_val, y_val, epochs=EPOCHS, batch_size=BATCH_SIZE)
     
-    val_accuracy = model.evaluate(X_val, y_val)[1]
+    # val_accuracy = model.evaluate(X_val, y_val)[1]
+
+    # === Predict on validation set ===
+    y_probs = model.predict(X_val)
+    y_pred = (y_probs > 0.5).astype("int32").flatten()
+    acc = accuracy_score(y_val, y_pred)
+    prec = precision_score(y_val, y_pred, zero_division=0)
+    rec = recall_score(y_val, y_pred)
+    f1 = f1_score(y_val, y_pred)
+    auc = roc_auc_score(y_val, y_probs)
+
+    metrics = {
+    "accuracy": acc,
+    "precision": prec,
+    "recall": rec,
+    "f1_score": f1,
+    "auc_score": auc
+}
 
     # === Save final weights (optional if checkpoint saves best) ===
     model.save(MODEL_SAVE_PATH)
 
    # MLflow run
-    start_mlflow_run_with_logging( experiment_name=EXPERIMENT_NAME, run_name= run_name, params=params, tags=tags, history=history, 
-                                  model=model, val_accuracy=val_accuracy, X_train=X_train, y_train=y_train)
+    start_mlflow_run_with_logging( 
+        experiment_name=EXPERIMENT_NAME, 
+        run_name= run_name, 
+        params=params, 
+        tags=tags, 
+        history=history, 
+        model=model, 
+        X_train=X_train, 
+        y_train=y_train,
+        run_prefix="meso4_experiment_run",
+        metrics=metrics
+        )
     
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from sklearn.metrics import (
     recall_score,
     f1_score,
     confusion_matrix,
-    classification_report,
+    classification_report, roc_auc_score
 )
 
 # Add the parent of "src" to Python path
@@ -46,12 +46,16 @@ acc = accuracy_score(y_test, y_pred)
 prec = precision_score(y_test, y_pred, zero_division=0)
 rec = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
+auc = roc_auc_score(y_test, y_probs)
 
 print("Evaluation Metrics:")
 print(f"Accuracy  : {acc:.4f}")
 print(f"Precision : {prec:.4f}")
 print(f"Recall    : {rec:.4f}")
 print(f"F1 Score  : {f1:.4f}")
+print(f"AUC Score: {auc:.4f}") 
+
+# === Classification Report ===
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred, target_names=["Real", "Fake"]))
 

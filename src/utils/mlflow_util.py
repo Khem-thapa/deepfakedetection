@@ -11,10 +11,11 @@ def start_mlflow_run_with_logging(
     tags=None,
     history = None,
     model=None,
-    val_accuracy=0.0,
-    run_prefix="df_experiment_run",
     X_train=None,
-    y_train=None):
+    y_train=None,
+    run_prefix="df_experiment_run",
+    metrics = None
+    ):
     """
     MLflow experiment runner with logging, auto-named runs, metrics, and artifacts.
     """
@@ -40,8 +41,11 @@ def start_mlflow_run_with_logging(
                 mlflow.set_tag(key, str(value))
 
         # === Log metrics ===
-        mlflow.log_metric("val_accuracy", float(val_accuracy))
-
+        # mlflow.log_metric("val_accuracy", float(val_accuracy))
+        if metrics:
+            for key, value in metrics.items():
+                mlflow.log_metric(key, round(value, 4))
+         
         # === Log model ===
         if model and X_train is not None and y_train is not None:
             keras_model = model.model if hasattr(model, "model") else model # Assuming model has a 'model' attribute for Keras models
@@ -51,7 +55,7 @@ def start_mlflow_run_with_logging(
                 keras_model, 
                 artifact_path="models", 
                 signature=signature, 
-                # input_example=sample_X,  # as input_example is not supported in mlflow.keras.log_model and these are image data
+                # input_example=sample_X,  # as input_example is not supported in mlflow.keras.log_model for image data
                 registered_model_name=run_name)
             
         # === Log model summary, curves etc. ===
@@ -60,6 +64,9 @@ def start_mlflow_run_with_logging(
             if history:
                 logger.log_training_curves(history)
             if model:
-                logger.log_model_summary(model)
+                logger.log_model_summary(model)  
 
-            logger.log_text(f"Completed run with val_accuracy: {val_accuracy:.4f}")
+            # Log confusion matrix and ROC curve    
+            if X_train is not None and y_train is not None:
+                logger.log_confusion_matrix(model, X_train, y_train)
+                logger.log_roc_curve(model, X_train, y_train)
