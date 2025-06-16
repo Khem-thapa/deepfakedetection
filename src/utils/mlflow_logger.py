@@ -12,7 +12,7 @@ class MLFlowLogger:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-    def log_training_curves(self, history):
+    def log_training_curves(self, history, filename="training_curves.png"):
         plt.figure(figsize=(12, 5))
 
         # Accuracy
@@ -34,7 +34,7 @@ class MLFlowLogger:
         plt.legend()
 
         # Save and log
-        path = os.path.join(self.output_dir, "training_curves.png")
+        path = os.path.join(self.output_dir, filename )
         plt.savefig(path)
         mlflow.log_artifact(path)
         plt.close()
@@ -96,3 +96,10 @@ class MLFlowLogger:
         plt.savefig(roc_path)
         mlflow.log_artifact(roc_path)
         plt.close()
+
+    def log_json_summary(self, summary_data, filename="run_summary.json"):
+        import json
+        summary_path = os.path.join(self.output_dir, filename)
+        with open(summary_path, "w", encoding="utf-8") as f:
+            json.dump(summary_data, f, indent=4)
+        mlflow.log_artifact(summary_path)

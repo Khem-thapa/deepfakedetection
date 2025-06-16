@@ -16,13 +16,10 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
-    confusion_matrix,
-    classification_report, roc_auc_score
+    roc_auc_score
 )
-import mlflow
 
 from utils.mlflow_util import start_mlflow_run_with_logging
-from utils.mlflow_logger import MLFlowLogger
 
 def main():
 

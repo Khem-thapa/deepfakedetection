@@ -43,9 +43,10 @@ def start_mlflow_run_with_logging(
         # === Log metrics ===
         # mlflow.log_metric("val_accuracy", float(val_accuracy))
         if metrics:
+            logger = MLFlowLogger()
             for key, value in metrics.items():
                 mlflow.log_metric(key, round(value, 4))
-         
+            
         # === Log model ===
         if model and X_train is not None and y_train is not None:
             keras_model = model.model if hasattr(model, "model") else model # Assuming model has a 'model' attribute for Keras models
@@ -70,3 +71,17 @@ def start_mlflow_run_with_logging(
             if X_train is not None and y_train is not None:
                 logger.log_confusion_matrix(model, X_train, y_train)
                 logger.log_roc_curve(model, X_train, y_train)
+
+            # === Log in json format ===
+            if model:
+                summary_data = {
+                    "run_name": run_name,
+                    "experiment_name": experiment_name,
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "run_id": mlflow.active_run().info.run_id,
+                    "params": params if params else {},
+                    "tags": tags if tags else {},
+                    "metrics": {k: round(v, 4) for k, v in metrics.items()} if metrics else {}
+                }
+                logger.log_json_summary(summary_data) 
+        

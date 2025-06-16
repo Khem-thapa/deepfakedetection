@@ -1,0 +1,34 @@
+{
+    "run_name": "Meso4_Run",
+    "experiment_name": "Deepfake detection",
+    "timestamp": "2025-06-15 14:24:16",
+    "run_id": "f489caf99bf341e684e9c364339ca19c",
+    "params": {
+        "model": "<models.meso4.Meso4Model object at 0x0000023B8C4E8040>",
+        "model_architecture": "<models.meso4.Meso4Model object at 0x0000023B8C4E8040>",
+        "epochs": 10,
+        "batch_size": 16,
+        "model_save_path": "models/meso4.weights.h5",
+        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x0000023B8FCA5B40>",
+        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x0000023B8FCA5A50>",
+        "data_loader": "<data.dataloader.DataLoader object at 0x0000023B8A0C9ED0>",
+        "X_train_shape": "(16, 256, 256, 3)",
+        "X_val_shape": "(4, 256, 256, 3)",
+        "y_train_shape": "(16,)",
+        "y_val_shape": "(4,)",
+        "MODEL_PATH": "models",
+        "real_dir": "dataset/DFDC/real_small/",
+        "fake_dir": "dataset/DFDC/fake_small/"
+    },
+    "tags": {
+        "script": "run_experiment",
+        "stage": "training"
+    },
+    "metrics": {
+        "accuracy": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "auc_score": 1.0
+    }
+}
