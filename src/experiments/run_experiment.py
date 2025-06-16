@@ -57,6 +57,10 @@ def main():
         monitor="val_accuracy", patience=3, restore_best_weights=True, verbose=1
     )
 
+    # === Load dataset version from DVC ===
+    from utils.dvc_utils import get_dvc_dataset_version
+    dataset_version = get_dvc_dataset_version("dataset.dvc")
+
     # === MLflow Run ===
     run_name="Meso4_Run"
     params={
@@ -74,7 +78,8 @@ def main():
         "y_val_shape": str(y_val.shape),
         "MODEL_PATH": MODEL_PATH,
         "real_dir": REAL_DIR,
-        "fake_dir": FAKE_DIR
+        "fake_dir": FAKE_DIR,
+        "dataset_version": dataset_version,
     }
     tags={"script": "run_experiment", "stage": "training"}
 
