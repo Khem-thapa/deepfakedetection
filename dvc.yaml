@@ -9,7 +9,7 @@ stages:
   evaluate:
     cmd: python src/evaluate/evaluate_model.py
     deps:
-      - models/meso.weights.h5
+      - models/meso4.weights.h5
       - src/evaluate/evaluate_model.py
     metrics:
       - results/evaluate/metrics.json

@@ -1,0 +1,35 @@
+schema: '2.0'
+stages:
+  train:
+    cmd: python src/experiments/run_experiment.py
+    deps:
+    - path: dataset/DFDC
+      hash: md5
+      md5: db2caf687fbfcbd80eda803fd38069a1.dir
+      size: 1069666
+      nfiles: 40
+    - path: src/experiments/run_experiment.py
+      hash: md5
+      md5: e95e2fd4d107d1761b2b8a72335ae32e
+      size: 3992
+    outs:
+    - path: models/meso4.weights.h5
+      hash: md5
+      md5: c9d28369496f159c381cfc4330ee5fc7
+      size: 416624
+  evaluate:
+    cmd: python src/evaluate/evaluate_model.py
+    deps:
+    - path: models/meso4.weights.h5
+      hash: md5
+      md5: c9d28369496f159c381cfc4330ee5fc7
+      size: 416624
+    - path: src/evaluate/evaluate_model.py
+      hash: md5
+      md5: 763920047678c1659a68d5f4fe2115c9
+      size: 2171
+    outs:
+    - path: results/evaluate/metrics.json
+      hash: md5
+      md5: 296c6cc4c99eb0979647a9c5b53b8387
+      size: 79
