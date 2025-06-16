@@ -26,8 +26,6 @@ REAL_DIR = config.get("data.REAL_DIR")
 FAKE_DIR = config.get("data.FAKE_DIR")
 IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
 MODEL_PATH = config.get("model.CUSTOM_WEIGHTS")
-RESULTS_DIR = config.get("output.RESULT_DIR")
-RESULT_CONFUSION_MATRIX = config.get("output.RESULT_CONFUSION_MATRIX")
 
 # === Load test data ===
 loader = DataLoader(real_dir=REAL_DIR, fake_dir=FAKE_DIR)
@@ -48,12 +46,20 @@ rec = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 auc = roc_auc_score(y_test, y_probs)
 
-print("Evaluation Metrics:")
-print(f"Accuracy  : {acc:.4f}")
-print(f"Precision : {prec:.4f}")
-print(f"Recall    : {rec:.4f}")
-print(f"F1 Score  : {f1:.4f}")
-print(f"AUC Score: {auc:.4f}") 
+import json
+
+metrics = {
+    "accuracy": acc,
+    "precision": prec,
+    "recall": rec,
+    "f1_score": f1,
+    "auc": auc
+}
+
+# Save metrics to JSON file
+os.makedirs("results/evaluate", exist_ok=True)
+with open("results/evaluate/metrics.json", "w") as f:
+    json.dump(metrics, f)
 
 # === Classification Report ===
 print("\nClassification Report:")
@@ -69,6 +75,5 @@ plt.title("Confusion Matrix")
 plt.tight_layout()
 
 # Save confusion matrix
-os.makedirs(RESULTS_DIR, exist_ok=True)
-plt.savefig(RESULT_CONFUSION_MATRIX)
+plt.savefig("results/evaluate/confusion_matrix.png")
 plt.show()
