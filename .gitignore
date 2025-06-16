@@ -41,7 +41,7 @@ runs/
 *.swp
 *~
 # dataset 
-dataset
+dataset/
 DFDC/
 fakeavceleb/
 mlruns/
