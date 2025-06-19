@@ -1,35 +1,35 @@
 {
     "run_name": "Meso4_Run",
     "experiment_name": "Deepfake detection",
-    "timestamp": "2025-06-16 16:10:04",
-    "run_id": "2a1efda6842a4afd8e2e1cf28e3a2875",
+    "timestamp": "2025-06-19 13:16:09",
+    "run_id": "8367bf0b2b5d452ba37d39e479ce61ed",
     "params": {
-        "model": "<models.meso4.Meso4Model object at 0x00000266E2766950>",
-        "model_architecture": "<models.meso4.Meso4Model object at 0x00000266E2766950>",
+        "model": "<models.meso4.Meso4Model object at 0x000002511876A9E0>",
+        "model_architecture": "<models.meso4.Meso4Model object at 0x000002511876A9E0>",
         "epochs": 10,
         "batch_size": 16,
         "model_save_path": "models/meso4.weights.h5",
-        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x00000266EDF95BD0>",
-        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x00000266EDF95AE0>",
-        "data_loader": "<data.dataloader.DataLoader object at 0x00000266EA783C40>",
-        "X_train_shape": "(32, 256, 256, 3)",
-        "X_val_shape": "(8, 256, 256, 3)",
-        "y_train_shape": "(32,)",
-        "y_val_shape": "(8,)",
+        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x0000025123F25C90>",
+        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x0000025123F25BA0>",
+        "data_loader": "<data.dataloader.DataLoader object at 0x0000025120783D00>",
+        "X_train_shape": "(1214, 256, 256, 3)",
+        "X_val_shape": "(304, 256, 256, 3)",
+        "y_train_shape": "(1214,)",
+        "y_val_shape": "(304,)",
         "MODEL_PATH": "models",
         "real_dir": "dataset/DFDC/real_small/",
         "fake_dir": "dataset/DFDC/fake_small/",
-        "dataset_version": "24f40da8ac831bd4c20b8c9d63bf8156.dir"
+        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir"
     },
     "tags": {
         "script": "run_experiment",
         "stage": "training"
     },
     "metrics": {
-        "accuracy": 0.5,
-        "precision": 0.0,
-        "recall": 0.0,
-        "f1_score": 0.0,
-        "auc_score": 1.0
+        "accuracy": 0.5789,
+        "precision": 0.5822,
+        "recall": 0.5592,
+        "f1_score": 0.5705,
+        "auc_score": 0.6425
     }
 }

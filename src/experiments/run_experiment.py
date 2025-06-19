@@ -30,7 +30,8 @@ def main():
     FAKE_DIR = config.get("data.FAKE_DIR")
     EPOCHS = config.get("train.EPOCHS")
     BATCH_SIZE = config.get("train.BATCH_SIZE")
-    MODEL_SAVE_PATH =  config.get("output.MODEL_SAVE_PATH")
+    MODEL_WEIGHT_PATH =  config.get("output.MODEL_WEIGHT_PATH")
+    MODEL_FULL_PATH = config.get("output.MODEL_FULL_PATH")
     EXPERIMENT_NAME = config.get("mlflow.EXPERIMENT_NAME")
     MODEL_PATH = config.get("output.MODELS_PATH")
     
@@ -42,10 +43,10 @@ def main():
     model = Meso4Model()
 
     # === Callbacks ===
-    os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
+    os.makedirs(os.path.dirname(MODEL_WEIGHT_PATH), exist_ok=True)
 
     checkpoint_cb = ModelCheckpoint(
-        filepath=MODEL_SAVE_PATH,  # must end in .weights.h5 if save_weights_only=True
+        filepath=MODEL_WEIGHT_PATH,  # must end in .weights.h5 if save_weights_only=True
         save_best_only=True,
         save_weights_only=True,
         monitor="val_accuracy",
@@ -68,7 +69,7 @@ def main():
         "model_architecture": str(model),
         "epochs": EPOCHS,
         "batch_size": BATCH_SIZE,
-        "model_save_path": MODEL_SAVE_PATH,
+        "model_save_path": MODEL_WEIGHT_PATH,
         "checkpoint_callback": str(checkpoint_cb),
         "early_stopping_callback": str(early_stop_cb),
         "data_loader": str(loader), 
@@ -110,7 +111,10 @@ def main():
 }
 
     # === Save final weights (optional if checkpoint saves best) ===
-    model.save(MODEL_SAVE_PATH)
+    model.save(MODEL_WEIGHT_PATH)
+
+    # Save the model to the specified path
+    model.save(MODEL_FULL_PATH)
 
    # MLflow run
     start_mlflow_run_with_logging( 

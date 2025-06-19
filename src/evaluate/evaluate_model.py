@@ -25,7 +25,7 @@ config = ConfigLoader("src/config/config.yaml")
 REAL_DIR = config.get("data.REAL_DIR")
 FAKE_DIR = config.get("data.FAKE_DIR")
 IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
-MODEL_PATH = config.get("model.CUSTOM_WEIGHTS")
+FULL_MODEL = config.get("output.MODEL_FULL_PATH")
 
 # === Load test data ===
 loader = DataLoader(real_dir=REAL_DIR, fake_dir=FAKE_DIR)
@@ -33,7 +33,7 @@ _, X_test, _, y_test = loader.load_data()
 
 # === Load model and weights ===
 model = Meso4Model()
-model.load(MODEL_PATH)
+model.load(FULL_MODEL)
 
 # === Predict ===
 y_probs = model.predict(X_test)

@@ -8,12 +8,12 @@ train:
   BATCH_SIZE: 16
 
 model:
-  CUSTOM_WEIGHTS: "models/meso4.weights.h5"
   PRETRAINED_WEIGHTS: "models/Meso4_DF.h5"
 
 output:
   RESULT_DIR: "results"
-  MODEL_SAVE_PATH: "models/meso4.weights.h5"
+  MODEL_WEIGHT_PATH: "models/meso4.weights.h5"
+  MODEL_FULL_PATH: "models/meso4_full_model.h5"
   RESULT_CONFUSION_MATRIX: "results/confusion_matrix.png"
   MODELS_PATH: "models"
   

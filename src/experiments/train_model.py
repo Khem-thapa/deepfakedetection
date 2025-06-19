@@ -9,7 +9,8 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from data.dataloader import DataLoader
-from models.meso4 import Meso4Model
+# from models.meso4 import Meso4Model
+from models.meso4_optimized import Meso4_Opt_Model
 from utils.config_loader import ConfigLoader 
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from sklearn.metrics import (
@@ -31,21 +32,22 @@ def main():
     FAKE_DIR = config.get("data.FAKE_DIR")
     EPOCHS = config.get("train.EPOCHS")
     BATCH_SIZE = config.get("train.BATCH_SIZE")
-    MODEL_SAVE_PATH =  config.get("output.MODEL_SAVE_PATH")
-    MODEL_PATH = config.get("output.MODELS_PATH")
+    MODEL_WEIGHT_PATH =  config.get("output.MODEL_WEIGHT_PATH")
+    MODEL_FULL_PATH = config.get("output.MODEL_FULL_PATH")
+
     
     # Step 1: Load Data
     loader = DataLoader(REAL_DIR, FAKE_DIR)
     X_train, X_val, y_train, y_val = loader.load_data()
 
     # Step 2:  Model
-    model = Meso4Model()
+    model = Meso4_Opt_Model()
 
     # === Callbacks ===
-    os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
+    os.makedirs(os.path.dirname(MODEL_WEIGHT_PATH), exist_ok=True)
 
     checkpoint_cb = ModelCheckpoint(
-        filepath=MODEL_SAVE_PATH,  # must end in .weights.h5 if save_weights_only=True
+        filepath=MODEL_WEIGHT_PATH,  # must end in .weights.h5 if save_weights_only=True
         save_best_only=True,
         save_weights_only=True,
         monitor="val_accuracy",
@@ -83,15 +85,13 @@ def main():
     "val_loss": val_loss
     }
 
-    # Save metrics to JSON file
-    import json
-    os.makedirs("results/train", exist_ok=True)
-    with open("results/train/metrics.json", "w") as f:
-        json.dump(metrics, f)
+    from utils.metrics_logger import log_metrics_to_json
+    log_metrics_to_json(metrics, output_dir="results/train", filename="metrics.json")
 
     # === Save final weights (optional if checkpoint saves best) ===
-    model.save(MODEL_SAVE_PATH)
-    
+    model.save(MODEL_WEIGHT_PATH)
 
+    model.save(MODEL_FULL_PATH)  # Save the full model
+    
 if __name__ == "__main__":
     main()

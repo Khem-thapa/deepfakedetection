@@ -20,7 +20,7 @@ REAL_DIR = config.get("data.REAL_DIR")
 FAKE_DIR = config.get("data.FAKE_DIR")
 IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
 
-CUSTOM_WEIGHTS = config.get("model.CUSTOM_WEIGHTS")
+FULL_MODEL = config.get("output.MODEL_FULL_PATH")
 PRETRAINED_WEIGHTS = config.get("model.PRETRAINED_WEIGHTS")
 RESULTS_DIR = config.get("output.RESULT_DIR")
 
@@ -31,7 +31,7 @@ X_train, X_val, y_train, y_val = loader.load_data()
 # === Load and Predict with Models ===
 custom_model = Meso4Model()
 custom_model.model.summary()
-custom_model.load(CUSTOM_WEIGHTS)
+custom_model.load(FULL_MODEL)
 y_pred_custom = (custom_model.predict(X_val) > 0.5).astype("int32")
 
 pretrained_model = Meso4Model()

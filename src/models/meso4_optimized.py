@@ -1,12 +1,13 @@
 from keras.models import Sequential
-from keras.layers import Conv2D, BatchNormalization, Activation, AveragePooling2D
-from keras.layers import Flatten, Dropout, Dense
+from keras.layers import Conv2D, BatchNormalization, Activation, AveragePooling2D, GlobalAveragePooling2D
+from keras.layers import Flatten, Dropout, Dense, LeakyReLU
+from keras.losses import BinaryCrossentropy
 from keras.optimizers import Adam
 import numpy as np
 
 # Meso4Model: A Convolutional Neural Network for image classification
 # This model is designed to classify images into two categories (e.g., real vs fake).
-class Meso4Model:
+class Meso4_Opt_Model:
     def __init__(self, input_shape=(256, 256, 3), learning_rate=0.001):
         self.model = self._build_model(input_shape)
         self.model.compile(optimizer=Adam(learning_rate=learning_rate),
@@ -19,34 +20,34 @@ class Meso4Model:
         model = Sequential()
 
         # Adding layers to the model    
-        model.add(Conv2D(8, (3, 3), padding='same', input_shape=input_shape))
+        model.add(Conv2D(8, (3, 3), padding='same', input_shape=input_shape)) # padding='same' ensures output size matches input size
         model.add(BatchNormalization()) 
-        model.add(Activation('relu'))
+        model.add(LeakyReLU(alpha=0.1))  # Using LeakyReLU for better performance, and to avoid dead neurons
         model.add(AveragePooling2D(pool_size=(2, 2), padding='same'))
 
         # Additional convolutional layers with batch normalization and activation
         model.add(Conv2D(8, (5, 5), padding='same'))
         model.add(BatchNormalization())
-        model.add(Activation('relu'))
+        model.add(LeakyReLU(alpha=0.1))  
         model.add(AveragePooling2D(pool_size=(2, 2), padding='same'))
 
         model.add(Conv2D(16, (5, 5), padding='same'))
         model.add(BatchNormalization())
-        model.add(Activation('relu'))
+        model.add(LeakyReLU(alpha=0.1))
         model.add(AveragePooling2D(pool_size=(2, 2), padding='same'))
 
         # Additional convolutional layers with batch normalization and activation
         model.add(Conv2D(16, (5, 5), padding='same'))
         model.add(BatchNormalization())
-        model.add(Activation('relu'))
+        model.add(LeakyReLU(alpha=0.1))
         model.add(AveragePooling2D(pool_size=(4, 4), padding='same'))
 
         # Flatten the output from the convolutional layers
         # and add fully connected layers
-        model.add(Flatten())
-        model.add(Dropout(0.5))
-        model.add(Dense(16))
-        model.add(Activation('relu'))
+        model.add(GlobalAveragePooling2D())  # Using Global Average Pooling instead of Flatten for better generalization and fewer parameters
+        model.add(Dense(32))
+        model.add(BatchNormalization())
+        model.add(LeakyReLU(alpha=0.1))
         model.add(Dropout(0.5))
         model.add(Dense(1))
         model.add(Activation('sigmoid'))
@@ -98,7 +99,7 @@ class Meso4Model:
             self.model = load_model(path)
             print(f"Model loaded from {path}")
             return 
-        
+
     # Get model summary
     def summary(self, *args, **kwargs):
         return self.model.summary(*args, **kwargs)
