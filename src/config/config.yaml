@@ -5,7 +5,7 @@ data:
 
 train:
   EPOCHS: 10
-  BATCH_SIZE: 16
+  BATCH_SIZE: 20
 
 model:
   PRETRAINED_WEIGHTS: "models/Meso4_DF.h5"
@@ -14,6 +14,7 @@ output:
   RESULT_DIR: "results"
   MODEL_WEIGHT_PATH: "models/meso4.weights.h5"
   MODEL_FULL_PATH: "models/meso4_full_model.h5"
+  MODEL_OPT_FULL_PATH: "models/meso4_opt_full_model.h5"
   RESULT_CONFUSION_MATRIX: "results/confusion_matrix.png"
   MODELS_PATH: "models"
   

@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report
 # Add parent of src to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from models.meso4 import Meso4Model
+from models.meso4_optimized import Meso4_Opt_Model
 from data.dataloader import DataLoader
 from utils.config_loader import ConfigLoader
 
@@ -32,13 +32,14 @@ def main(args):
     config = ConfigLoader("src/config/config.yaml")
 
     IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
-    CUSTOM_WEIGHTS = config.get("model.CUSTOM_WEIGHTS")
+    # CUSTOM_WEIGHTS = config.get("output.MODEL_WEIGHT_PATH")
+    MODEL_FULL_PATH = config.get("output.MODEL_OPT_FULL_PATH")
     RESULTS_DIR = config.get("output.RESULT_DIR")
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
     # Load custom model
-    model = Meso4Model()
-    model.load(CUSTOM_WEIGHTS)
+    model = Meso4_Opt_Model()
+    model.load(MODEL_FULL_PATH)
 
     if args.image_path:
         # === Predict from a single image ===

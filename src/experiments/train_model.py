@@ -32,28 +32,42 @@ def main():
     FAKE_DIR = config.get("data.FAKE_DIR")
     EPOCHS = config.get("train.EPOCHS")
     BATCH_SIZE = config.get("train.BATCH_SIZE")
-    MODEL_WEIGHT_PATH =  config.get("output.MODEL_WEIGHT_PATH")
-    MODEL_FULL_PATH = config.get("output.MODEL_FULL_PATH")
+    # MODEL_WEIGHT_PATH =  config.get("output.MODEL_WEIGHT_PATH")
+    MODEL_OPT_FULL_PATH = config.get("output.MODEL_OPT_FULL_PATH")
 
     
     # Step 1: Load Data
     loader = DataLoader(REAL_DIR, FAKE_DIR)
     X_train, X_val, y_train, y_val = loader.load_data()
 
+    import numpy as np
+    print(f"[INFO] Training set size: {len(X_train)}, Validation set size: {len(X_val)}")
+    # Check if the data is loaded correctly
+    print(f"[DEBUG] X_train shape: {X_train.shape}, y_train shape: {y_train.shape}")
+    print(f"[DEBUG] X_val shape: {X_val.shape}, y_val shape: {y_val.shape}")    
+    # Check if the data is balanced
+    print(f"[DEBUG] Training set label distribution: {dict(zip(*np.unique(y_train, return_counts=True)))}")
+    print(f"[DEBUG] Validation set label distribution: {dict(zip(*np.unique(y_val, return_counts=True)))}")
+    # Check if the data is normalized
+    print(f"[DEBUG] X_train min: {X_train.min()}, max: {X_train.max()}")    
+    print(f"[DEBUG] X_val min: {X_val.min()}, max: {X_val.max()}")
+
+    
+
     # Step 2:  Model
     model = Meso4_Opt_Model()
 
     # === Callbacks ===
-    os.makedirs(os.path.dirname(MODEL_WEIGHT_PATH), exist_ok=True)
+    # os.makedirs(os.path.dirname(MODEL_WEIGHT_PATH), exist_ok=True)
 
-    checkpoint_cb = ModelCheckpoint(
-        filepath=MODEL_WEIGHT_PATH,  # must end in .weights.h5 if save_weights_only=True
-        save_best_only=True,
-        save_weights_only=True,
-        monitor="val_accuracy",
-        mode="max",
-        verbose=1,
-    )
+    # checkpoint_cb = ModelCheckpoint(
+    #     filepath=MODEL_WEIGHT_PATH,  # must end in .weights.h5 if save_weights_only=True
+    #     save_best_only=True,
+    #     save_weights_only=True,
+    #     monitor="val_accuracy",
+    #     mode="max",
+    #     verbose=1,
+    # )
 
     early_stop_cb = EarlyStopping(
         monitor="val_accuracy", patience=3, restore_best_weights=True, verbose=1
@@ -89,9 +103,9 @@ def main():
     log_metrics_to_json(metrics, output_dir="results/train", filename="metrics.json")
 
     # === Save final weights (optional if checkpoint saves best) ===
-    model.save(MODEL_WEIGHT_PATH)
+    # model.save(MODEL_WEIGHT_PATH)
 
-    model.save(MODEL_FULL_PATH)  # Save the full model
+    model.save(MODEL_OPT_FULL_PATH)  # Save the full model
     
 if __name__ == "__main__":
     main()

@@ -45,10 +45,10 @@ class Meso4_Opt_Model:
         # Flatten the output from the convolutional layers
         # and add fully connected layers
         model.add(GlobalAveragePooling2D())  # Using Global Average Pooling instead of Flatten for better generalization and fewer parameters
-        model.add(Dense(32))
+        model.add(Dense(16))
         model.add(BatchNormalization())
         model.add(LeakyReLU(alpha=0.1))
-        model.add(Dropout(0.5))
+        model.add(Dropout(0.3))
         model.add(Dense(1))
         model.add(Activation('sigmoid'))
 
