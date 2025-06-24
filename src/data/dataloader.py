@@ -30,10 +30,10 @@ class DataLoader:
 
     def load_data(self):
         print("[INFO] Loading real images...")
-        real_images, real_labels = self._load_images_from_dir(self.real_dir, label=1)
+        real_images, real_labels = self._load_images_from_dir(self.real_dir, label=0)
 
         print("[INFO] Loading fake images...")
-        fake_images, fake_labels = self._load_images_from_dir(self.fake_dir, label=0)
+        fake_images, fake_labels = self._load_images_from_dir(self.fake_dir, label=1)
 
         X = np.array(real_images + fake_images)
         y = np.array(real_labels + fake_labels)
