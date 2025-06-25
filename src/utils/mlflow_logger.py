@@ -39,11 +39,11 @@ class MLFlowLogger:
         mlflow.log_artifact(path)
         plt.close()
 
-    def log_confusion_matrix(self, model, X, y_true, filename="confusion_matrix_log.png"):
+    def log_confusion_matrix(self, model, val_gen, filename="confusion_matrix_log.png"):
         
-        y_probs = model.predict(X)
+        y_probs = model.predict(val_gen, verbose=1)  # Get predicted probabilities
         y_pred = (y_probs > 0.5).astype("int32").flatten()
-
+        y_true = val_gen.classes  # Get true labels from validation generator
         cm = confusion_matrix(y_true, y_pred)
         plt.figure(figsize=(6, 5))
         sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Real", "Fake"], yticklabels=["Real", "Fake"])
@@ -70,7 +70,7 @@ class MLFlowLogger:
             f.write(summary_io.getvalue())
         mlflow.log_artifact(summary_path)
     
-    def log_roc_curve(self, model, X, y_true, filename="roc_curve.png"):
+    def log_roc_curve(self, model, val_gen, filename="roc_curve.png"):
         """        Logs the ROC curve for a binary classification model.
         Args:
             model: The trained model to evaluate.
@@ -78,9 +78,9 @@ class MLFlowLogger:
             y_true: The true labels for the input features.
             filename: The name of the file to save the ROC curve plot.
         """
-        y_probs = model.predict(X)  # Get predicted probabilities
+        y_probs = model.predict(val_gen, verbose=1)  # Get predicted probabilities
         y_pred = (y_probs > 0.5).astype("int32").flatten()
-        # y_prob = model.predict(X).ravel()  # ravel to flatten the array if needed, it converts a multi-dimensional array to a 1D array
+        y_true = val_gen.classes  # Get true labels from validation generator
         fpr, tpr, _ = roc_curve(y_true, y_pred)
         auc_score = auc(fpr, tpr)
 

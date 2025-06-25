@@ -11,8 +11,8 @@ def start_mlflow_run_with_logging(
     tags=None,
     history = None,
     model=None,
-    X_train=None,
-    y_train=None,
+    train_gen=None,
+    val_gen=None,
     run_prefix="df_experiment_run",
     metrics = None
     ):
@@ -48,9 +48,10 @@ def start_mlflow_run_with_logging(
                 mlflow.log_metric(key, round(value, 4))
             
         # === Log model ===
-        if model and X_train is not None and y_train is not None:
+        if model and train_gen is not None and val_gen is not None:
             keras_model = model.model if hasattr(model, "model") else model # Assuming model has a 'model' attribute for Keras models
-            sample_X = X_train[:10] if len(X_train) > 10 else X_train
+            sample_X, sample_y = next(train_gen)  # Get a small batch of data for signature inference, that is exactly one batch of data
+            sample_X = np.array(sample_X)  # Ensure sample_X is a numpy array
             signature = infer_signature(sample_X, keras_model.predict(sample_X))  # Infer signature from a small sample of training data
             mlflow.keras.log_model(
                 keras_model, 
@@ -68,9 +69,9 @@ def start_mlflow_run_with_logging(
                 logger.log_model_summary(model)  
 
             # Log confusion matrix and ROC curve    
-            if X_train is not None and y_train is not None:
-                logger.log_confusion_matrix(model, X_train, y_train)
-                logger.log_roc_curve(model, X_train, y_train)
+            if train_gen is not None and val_gen is not None:
+                logger.log_confusion_matrix(model, val_gen)
+                logger.log_roc_curve(model, val_gen)
 
             # === Log in json format ===
             if model:

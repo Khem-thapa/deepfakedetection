@@ -1,6 +1,7 @@
 data:
-  REAL_DIR: "dataset/DFDC/real/"
-  FAKE_DIR: "dataset/DFDC/fake/"
+  FAKE_DIR: "dataset/fake_and_real/fake/"
+  REAL_DIR: "dataset/fake_and_real/real/"
+  DATA_DIR: "dataset/fake_and_real"
   IMAGE_SIZE: [256, 256]
 
 train:

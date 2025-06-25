@@ -11,6 +11,7 @@ from sklearn.metrics import classification_report
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from models.meso4_optimized import Meso4_Opt_Model
+from models.meso4 import Meso4Model
 from data.dataloader import DataLoader
 from utils.config_loader import ConfigLoader
 
@@ -38,7 +39,9 @@ def main(args):
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
     # Load custom model
-    model = Meso4_Opt_Model()
+    # model = Meso4_Opt_Model()
+    # model.load(MODEL_FULL_PATH)
+    model = Meso4Model()
     model.load(MODEL_FULL_PATH)
 
     if args.image_path:
@@ -53,28 +56,6 @@ def main(args):
         label_str = "Fake" if predicted_label == 1 else "Real"
         print(f"\nPrediction: {label_str} (Confidence: {prediction:.4f})")
 
-    else:
-        # === Predict on full validation set ===
-        REAL_DIR = config.get("data.REAL_DIR")
-        FAKE_DIR = config.get("data.FAKE_DIR")
-
-        loader = DataLoader(REAL_DIR, FAKE_DIR)
-        X_train, X_val, y_train, y_val = loader.load_data()
-
-        y_prob = model.predict(X_val)
-        y_pred = (y_prob > 0.5).astype("int32")
-
-        print("\n[Custom Model] Classification Report:")
-        print(classification_report(y_val, y_pred, target_names=["Real", "Fake"], zero_division=0))
-
-        # Save predictions
-        pred_df = pd.DataFrame({
-            "TrueLabel": y_val,
-            "PredictedProb": y_prob.flatten(),
-            "PredictedLabel": y_pred.flatten()
-        })
-        pred_df.to_csv(os.path.join(RESULTS_DIR, "custom_model_predictions.csv"), index=False)
-        print(f"\nPredictions saved to {os.path.join(RESULTS_DIR, 'custom_model_predictions.csv')}")
 
 # === CLI Arguments ===
 if __name__ == "__main__":

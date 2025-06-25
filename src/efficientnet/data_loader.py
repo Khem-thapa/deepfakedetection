@@ -21,7 +21,8 @@ def get_data_generators():
         target_size=(256, 256), 
         batch_size=32, 
         class_mode='binary', 
-        subset='training'
+        subset='training',
+        classes=['real', 'fake']  # real = 0, fake = 1
         )
     
     # Validation generator
@@ -31,7 +32,8 @@ def get_data_generators():
         target_size=(256, 256),
         batch_size=32, 
         class_mode='binary', 
-        subset='validation' 
+        subset='validation',
+        classes=['real', 'fake']  # real = 0, fake = 1
         )
     
     return train_gen, val_gen

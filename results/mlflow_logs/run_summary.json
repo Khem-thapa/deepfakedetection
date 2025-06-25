@@ -1,35 +1,46 @@
 {
     "run_name": "Meso4_Run",
     "experiment_name": "Deepfake detection",
-    "timestamp": "2025-06-19 13:16:09",
-    "run_id": "8367bf0b2b5d452ba37d39e479ce61ed",
+    "timestamp": "2025-06-25 19:53:14",
+    "run_id": "eaf8974926384c57a44d9b0e40f41cca",
     "params": {
-        "model": "<models.meso4.Meso4Model object at 0x000002511876A9E0>",
-        "model_architecture": "<models.meso4.Meso4Model object at 0x000002511876A9E0>",
+        "model": "<models.meso4.Meso4Model object at 0x000001FCFA4FAF50>",
+        "model_architecture": "<models.meso4.Meso4Model object at 0x000001FCFA4FAF50>",
         "epochs": 10,
-        "batch_size": 16,
+        "batch_size": 20,
         "model_save_path": "models/meso4.weights.h5",
-        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x0000025123F25C90>",
-        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x0000025123F25BA0>",
-        "data_loader": "<data.dataloader.DataLoader object at 0x0000025120783D00>",
-        "X_train_shape": "(1214, 256, 256, 3)",
-        "X_val_shape": "(304, 256, 256, 3)",
-        "y_train_shape": "(1214,)",
-        "y_val_shape": "(304,)",
+        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x000001FC85F16590>",
+        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x000001FC85F164A0>",
         "MODEL_PATH": "models",
-        "real_dir": "dataset/DFDC/real_small/",
-        "fake_dir": "dataset/DFDC/fake_small/",
-        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir"
+        "real_dir": "dataset/fake_and_real/real/",
+        "fake_dir": "dataset/fake_and_real/fake/",
+        "image_size": "(256, 256)",
+        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir",
+        "data_dir": "dataset/fake_and_real",
+        "train_generator": "<keras.src.legacy.preprocessing.image.DirectoryIterator object at 0x000001FC84895630>",
+        "val_generator": "<keras.src.legacy.preprocessing.image.DirectoryIterator object at 0x000001FCF81C09D0>",
+        "train_generator_samples": 8002,
+        "val_generator_samples": 2000,
+        "train_generator_classes": "[0 0 0 ... 1 1 1]",
+        "val_generator_classes": "[0 0 0 ... 1 1 1]",
+        "train_generator_class_indices": "{'real': 0, 'fake': 1}",
+        "val_generator_class_indices": "{'real': 0, 'fake': 1}",
+        "train_generator_image_shape": "(256, 256, 3)",
+        "val_generator_image_shape": "(256, 256, 3)",
+        "train_generator_batch_size": 20
     },
     "tags": {
         "script": "run_experiment",
-        "stage": "training"
+        "stage": "training",
+        "use_case": "Deepfake Detection",
+        "model": "Meso4",
+        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir"
     },
     "metrics": {
-        "accuracy": 0.5789,
-        "precision": 0.5822,
-        "recall": 0.5592,
-        "f1_score": 0.5705,
-        "auc_score": 0.6425
+        "accuracy": 0.509,
+        "precision": 0.5065,
+        "recall": 0.703,
+        "f1_score": 0.5888,
+        "auc_score": 0.5005
     }
 }

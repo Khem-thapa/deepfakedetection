@@ -55,10 +55,10 @@ class Meso4Model:
 
     # Train the model
     # x_train: training data, y_train: training labels
-    def train(self, x_train, y_train, x_val=None, y_val=None, batch_size=32, epochs=10):
+    def train(self, train_gen, val_gen, batch_size=32, epochs=10):
         return self.model.fit(
-            x_train, y_train,
-            validation_data=(x_val, y_val) if x_val is not None else None,
+            train_gen,
+            validation_data= val_gen,
             batch_size=batch_size,
             epochs=epochs,
             verbose=1
@@ -73,8 +73,8 @@ class Meso4Model:
 
     # Predict using the model
     # x_input: input data for prediction
-    def predict(self, x_input):
-        predictions = self.model.predict(x_input)
+    def predict(self, x_input, **kwargs):
+        predictions = self.model.predict(x_input, **kwargs)
         return predictions
 
     # Save the model or its weights
