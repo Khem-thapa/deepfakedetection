@@ -22,7 +22,8 @@ def get_data_generators():
         batch_size=32, 
         class_mode='binary', 
         subset='training',
-        classes=['real', 'fake']  # real = 0, fake = 1
+        classes=['real', 'fake'],  # real = 0, fake = 1,
+        shuffle=False  # Shuffle training data
         )
     
     # Validation generator
@@ -33,7 +34,8 @@ def get_data_generators():
         batch_size=32, 
         class_mode='binary', 
         subset='validation',
-        classes=['real', 'fake']  # real = 0, fake = 1
+        classes=['real', 'fake'],  # real = 0, fake = 1
+        shuffle=False  # Shuffle validation data
         )
     
     return train_gen, val_gen

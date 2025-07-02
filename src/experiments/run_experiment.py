@@ -108,26 +108,43 @@ def main():
     # === Train ===
     history = model.train(train_gen= train_gen, val_gen=val_gen, batch_size=BATCH_SIZE, epochs=EPOCHS)
     
-    # val_accuracy = model.evaluate(X_val, y_val)[1]
+    # Get predicted probabilities in training set
+    y_probs_t = model.predict(train_gen, verbose=1)
+    y_pred_t = (y_probs_t > 0.5).astype("int32").flatten()
 
-    # === Predict on validation set ===
+    # True labels
+    y_train = train_gen.classes
+
+    # Compute metrics
+    t_acc = accuracy_score(y_train, y_pred_t)
+    t_prec = precision_score(y_train, y_pred_t, zero_division=0)
+    t_rec = recall_score(y_train, y_pred_t)
+    t_f1 = f1_score(y_train, y_pred_t)
+    t_auc = roc_auc_score(y_train, y_probs_t)
+
+    # === Predict on validation set and capturing the metrics===
     y_probs = model.predict(val_gen, verbose=1)
     y_pred = (y_probs > 0.5).astype("int32").flatten()  # get predictions as 0 or 1
     y_val = val_gen.classes  # get true labels from validation generator
 
-    acc = accuracy_score(y_val, y_pred)
-    prec = precision_score(y_val, y_pred, zero_division=0)
-    rec = recall_score(y_val, y_pred)
-    f1 = f1_score(y_val, y_pred)
-    auc = roc_auc_score(y_val, y_probs)
+    val_acc = accuracy_score(y_val, y_pred)
+    val_prec = precision_score(y_val, y_pred, zero_division=0)
+    val_rec = recall_score(y_val, y_pred)
+    val_f1 = f1_score(y_val, y_pred)
+    val_auc = roc_auc_score(y_val, y_probs)
 
     metrics = {
-    "accuracy": acc,
-    "precision": prec,
-    "recall": rec,
-    "f1_score": f1,
-    "auc_score": auc
-}
+    "train_accuracy": t_acc,
+    "val_accuracy": val_acc,
+    "train_precision": t_prec,
+    "val_precision": val_prec,
+    "train_recall": t_rec,
+    "val_recall": val_rec,
+    "train_f1_score": t_f1,
+    "val_f1_score": val_f1,
+    "train_auc_score": t_auc,
+    "val_auc_score": val_auc
+    }
 
 
     # === Save final weights (optional if checkpoint saves best) ===

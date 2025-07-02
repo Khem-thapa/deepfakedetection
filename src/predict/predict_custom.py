@@ -34,7 +34,7 @@ def main(args):
 
     IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
     # CUSTOM_WEIGHTS = config.get("output.MODEL_WEIGHT_PATH")
-    MODEL_FULL_PATH = config.get("output.MODEL_OPT_FULL_PATH")
+    MODEL_FULL_PATH = config.get("output.MODEL_FULL_PATH")
     RESULTS_DIR = config.get("output.RESULT_DIR")
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
