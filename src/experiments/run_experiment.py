@@ -36,7 +36,7 @@ def main():
     EXPERIMENT_NAME = config.get("mlflow.EXPERIMENT_NAME")
     MODEL_PATH = config.get("output.MODELS_PATH")
     DATA_DIR = config.get("data.DATA_DIR")
-    
+    OUTPUT_DIR = config.get("output.OUTPUT_DIR_MESONET")
     # Step 1: Load Data & Data augmentation
     # Use data generators for training and validation
     train_gen, val_gen = get_data_generators(data_dir=DATA_DIR,
@@ -147,7 +147,8 @@ def main():
         train_gen=train_gen,  # Use train_gen for X_train
         val_gen=val_gen,  # Use val_gen for y_val
         run_prefix="meso4_experiment_run",
-        metrics=metrics
+        metrics=metrics,
+        output_dir= OUTPUT_DIR  # Directory to save MLflow logs
         )
     
 

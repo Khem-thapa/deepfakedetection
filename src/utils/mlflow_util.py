@@ -14,11 +14,15 @@ def start_mlflow_run_with_logging(
     train_gen=None,
     val_gen=None,
     run_prefix="df_experiment_run",
-    metrics = None
+    metrics = None,
+    output_dir="results/mlflow_logs/"
     ):
     """
     MLflow experiment runner with logging, auto-named runs, metrics, and artifacts.
     """
+
+    # Directory to save MLflow logs
+    logger = MLFlowLogger(output_dir=output_dir) 
 
     # === Auto-generate run_name if not provided ===
     if not run_name:
@@ -43,7 +47,6 @@ def start_mlflow_run_with_logging(
         # === Log metrics ===
         # mlflow.log_metric("val_accuracy", float(val_accuracy))
         if metrics:
-            logger = MLFlowLogger()
             for key, value in metrics.items():
                 mlflow.log_metric(key, round(value, 4))
             
@@ -62,7 +65,6 @@ def start_mlflow_run_with_logging(
             
         # === Log model summary, curves etc. ===
         if history or model:
-            logger = MLFlowLogger()
             if history:
                 logger.log_training_curves(history)
             if model:

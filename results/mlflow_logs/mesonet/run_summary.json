@@ -1,0 +1,46 @@
+{
+    "run_name": "Meso4_Run",
+    "experiment_name": "Deepfake detection",
+    "timestamp": "2025-07-02 11:25:44",
+    "run_id": "a1b9fe956b1e4fb286db37a6e4a38775",
+    "params": {
+        "model": "<models.meso4.Meso4Model object at 0x0000021B74698040>",
+        "model_architecture": "<models.meso4.Meso4Model object at 0x0000021B74698040>",
+        "epochs": 10,
+        "batch_size": 20,
+        "model_save_path": "models/meso4.weights.h5",
+        "checkpoint_callback": "<keras.src.callbacks.model_checkpoint.ModelCheckpoint object at 0x0000021B771526B0>",
+        "early_stopping_callback": "<keras.src.callbacks.early_stopping.EarlyStopping object at 0x0000021B771525C0>",
+        "MODEL_PATH": "models",
+        "real_dir": "dataset/fake_and_real/real/",
+        "fake_dir": "dataset/fake_and_real/fake/",
+        "image_size": "(256, 256)",
+        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir",
+        "data_dir": "dataset/fake_and_real",
+        "train_generator": "<keras.src.legacy.preprocessing.image.DirectoryIterator object at 0x0000021B768D5720>",
+        "val_generator": "<keras.src.legacy.preprocessing.image.DirectoryIterator object at 0x0000021B744FBFA0>",
+        "train_generator_samples": 16002,
+        "val_generator_samples": 4000,
+        "train_generator_classes": "[0 0 0 ... 1 1 1]",
+        "val_generator_classes": "[0 0 0 ... 1 1 1]",
+        "train_generator_class_indices": "{'real': 0, 'fake': 1}",
+        "val_generator_class_indices": "{'real': 0, 'fake': 1}",
+        "train_generator_image_shape": "(256, 256, 3)",
+        "val_generator_image_shape": "(256, 256, 3)",
+        "train_generator_batch_size": 20
+    },
+    "tags": {
+        "script": "run_experiment",
+        "stage": "training",
+        "use_case": "Deepfake Detection",
+        "model": "Meso4",
+        "dataset_version": "28b2b2834907cc6d38641810859d21a9.dir"
+    },
+    "metrics": {
+        "accuracy": 0.4988,
+        "precision": 0.4989,
+        "recall": 0.5545,
+        "f1_score": 0.5252,
+        "auc_score": 0.4974
+    }
+}

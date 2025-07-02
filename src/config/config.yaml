@@ -18,6 +18,8 @@ output:
   MODEL_OPT_FULL_PATH: "models/meso4_opt_full_model.h5"
   RESULT_CONFUSION_MATRIX: "results/confusion_matrix.png"
   MODELS_PATH: "models"
+  OUTPUT_DIR_MESONET: "results/mlflow_logs/mesonet/"
+  OUTPUT_DIR_EFFICIENT: "results/mlflow_logs/efficientnet/"
   
 
 mlflow:
