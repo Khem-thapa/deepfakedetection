@@ -1,8 +1,10 @@
 data:
-  FAKE_DIR: "dataset/fake_and_real/fake/"
-  REAL_DIR: "dataset/fake_and_real/real/"
-  DATA_DIR: "dataset/fake_and_real"
+  FAKE_DIR: "dataset/openfaceforensic/fake/"
+  REAL_DIR: "dataset/openfaceforensic/real/"
+  DATA_DIR: "dataset/openfaceforensic"
   IMAGE_SIZE: [256, 256]
+  INPUT_SHAPE: [256, 256, 3]
+  CLASSES: ['real', 'fake']
 
 train:
   EPOCHS: 10
@@ -10,17 +12,23 @@ train:
 
 model:
   PRETRAINED_WEIGHTS: "models/Meso4_DF.h5"
+  MODEL_MESO4_WEIGHT: "models/meso4/meso4.weights.h5"
+  MODEL_MESO4_FULL: "models/meso4/meso4_full_model.h5"
+  MODEL_MESO4_OPT_FULL: "models/meso4/meso4_opt_full_model.h5"
+  MODEL_EFFICIENTNET_FULL: "models/efficientnet/efficient_model.h5"
+  MODEL_EFFICIENTNET_WEIGHT: "models/efficientnet/efficient_model.weights.h5"
 
 output:
   RESULT_DIR: "results"
-  MODEL_WEIGHT_PATH: "models/meso4.weights.h5"
-  MODEL_FULL_PATH: "models/meso4_full_model.h5"
-  MODEL_OPT_FULL_PATH: "models/meso4_opt_full_model.h5"
   RESULT_CONFUSION_MATRIX: "results/confusion_matrix.png"
   MODELS_PATH: "models"
   OUTPUT_DIR_MESONET: "results/mlflow_logs/mesonet/"
   OUTPUT_DIR_EFFICIENT: "results/mlflow_logs/efficientnet/"
   
-
 mlflow:
-  EXPERIMENT_NAME: "Deepfake detection"
+  EXPERIMENT_NAME_MESO: "Deepfake detection_mesonet"
+  EXPERIMENT_NAME_EFFICIENTNET: "Deepfake detection_efficientnet"
+
+parameters:
+  OPTIMIZER: "adam"
+  LOSS_FUNC: "binary_crossentropy"
