@@ -3,13 +3,13 @@ stages:
     cmd: python src/experiments/run_experiment.py
     deps:
       - src/experiments/run_experiment.py
-      - dataset/DFDC
+      - dataset/openfaceforensic
     outs:
-      - models/meso4.weights.h5
+      - models/meso4/meso4_full_model.h5
   evaluate:
     cmd: python src/evaluate/evaluate_model.py
     deps:
-      - models/meso4.weights.h5
-      - src/evaluate/evaluate_model.py
+      - models/meso4/meso4_full_model.h5
+      - src/evaluate/evaluate_meso4_model.py
     metrics:
       - results/evaluate/metrics.json

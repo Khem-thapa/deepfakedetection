@@ -1,6 +1,8 @@
 data:
   FAKE_DIR: "dataset/openfaceforensic/fake/"
   REAL_DIR: "dataset/openfaceforensic/real/"
+  TEST_FAKE_DIR: "dataset/test/fake/"
+  TEST_REAL_DIR: "dataset/test/real/"
   DATA_DIR: "dataset/openfaceforensic"
   IMAGE_SIZE: [256, 256]
   INPUT_SHAPE: [256, 256, 3]
