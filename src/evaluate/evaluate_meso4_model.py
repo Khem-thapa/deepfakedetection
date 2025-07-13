@@ -27,7 +27,7 @@ FULL_MODEL = config.get("model.MODEL_MESO4_FULL")
 CLASSES = config.get("data.CLASSES")  # e.g., ['real', 'fake']
 BATCH_SIZE = config.get("train.BATCH_SIZE")
 
-base_path = os.path.abspath(os.getcwd(), 'dataset/test_openface')
+base_path = os.path.abspath( os.path.join(os.getcwd(), 'dataset/test_openface'))
 print("Base path for evaluation data:", base_path)
 # === Load test data ===
 eval_gen = get_data_generators(

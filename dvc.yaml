@@ -1,15 +1,16 @@
 stages:
   train:
-    cmd: python src/experiments/run_experiment.py
+    cmd: python src/experiments/run_mesonet.py
     deps:
-      - src/experiments/run_experiment.py
+      - src/experiments/run_mesonet.py
       - dataset/openfaceforensic
     outs:
       - models/meso4/meso4_full_model.h5
   evaluate:
-    cmd: python src/evaluate/evaluate_model.py
+    cmd: python src/evaluate/evaluate_meso4_model.py
     deps:
       - models/meso4/meso4_full_model.h5
       - src/evaluate/evaluate_meso4_model.py
+      - dataset/test_openface
     metrics:
       - results/evaluate/metrics.json

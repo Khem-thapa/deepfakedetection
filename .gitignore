@@ -48,3 +48,4 @@ mlruns/
 mlartifacts/
 /datase
 /dataset
+models/meso4/meso4_full_model.h5

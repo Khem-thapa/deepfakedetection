@@ -1,35 +1,40 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python src/experiments/run_experiment.py
+    cmd: python src/experiments/run_mesonet.py
     deps:
-    - path: dataset/DFDC
+    - path: dataset/openfaceforensic
       hash: md5
-      md5: d09bddbb65fecace36848c7b88715f87.dir
-      size: 35422431
-      nfiles: 1518
-    - path: src/experiments/run_experiment.py
+      md5: 5c7a0b6c48b63064cc87c6b952a0b950.dir
+      size: 549263942
+      nfiles: 60000
+    - path: src/experiments/run_mesonet.py
       hash: md5
-      md5: f96925a57ee5e4e180e162001ff448bd
-      size: 4143
+      md5: 15cae7a536be6536712c4bb0a7a166e5
+      size: 6077
     outs:
-    - path: models/meso4.weights.h5
+    - path: models/meso4/meso4_full_model.h5
       hash: md5
-      md5: df9f3795a68c8827ee8f9e4bf62ba81e
-      size: 416624
+      md5: 2ea3f7aac0e1827c3a950989eda68661
+      size: 437136
   evaluate:
-    cmd: python src/evaluate/evaluate_model.py
+    cmd: python src/evaluate/evaluate_meso4_model.py
     deps:
-    - path: models/meso4.weights.h5
+    - path: dataset/test_openface
       hash: md5
-      md5: df9f3795a68c8827ee8f9e4bf62ba81e
-      size: 416624
-    - path: src/evaluate/evaluate_model.py
+      md5: c9b9ed128ca14063d1210aa25073edb2.dir
+      size: 103564441
+      nfiles: 10002
+    - path: models/meso4/meso4_full_model.h5
       hash: md5
-      md5: edb56e6209fb4fca80be11025bc45724
-      size: 2173
+      md5: 2ea3f7aac0e1827c3a950989eda68661
+      size: 437136
+    - path: src/evaluate/evaluate_meso4_model.py
+      hash: md5
+      md5: 779a7ac2347b8e1ee52be0d10e7cc219
+      size: 2551
     outs:
     - path: results/evaluate/metrics.json
       hash: md5
-      md5: 6523f8de26ffdc2c3236f57aef5915b5
-      size: 153
+      md5: 223fc252d5a5d88ee3b98b837117c3b5
+      size: 154
