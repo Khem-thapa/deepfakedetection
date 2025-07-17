@@ -9,11 +9,10 @@ data:
   CLASSES: ['real', 'fake']
 
 train:
-  EPOCHS: 1
+  EPOCHS: 10
   BATCH_SIZE: 32
 
 model:
-  PRETRAINED_WEIGHTS: "models/Meso4_DF.h5"
   MODEL_MESO4_WEIGHT: "models/meso4/meso4.weights.h5"
   MODEL_MESO4_FULL: "models/meso4/meso4_full_model.h5"
   MODEL_MESO4_OPT_FULL: "models/meso4/meso4_opt_full_model.h5"
