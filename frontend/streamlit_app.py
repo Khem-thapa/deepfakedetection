@@ -2,6 +2,10 @@ import streamlit as st
 import requests
 from PIL import Image
 import io
+import os
+current_dir = os.path.dirname(__file__)
+image_path = os.path.join(current_dir, "images", "artificial-intelligence.png")
+
 
 # --- Custom CSS for style ---
 st.markdown(
@@ -43,7 +47,7 @@ col1, col2 = st.columns([2,1])
 with col1:
     st.markdown('<div class="main-header">🕵️‍♂️ Deepfake Detection App</div>', unsafe_allow_html=True)
 with col2:
-    st.image("frontend/images/artificial-intelligence.png", width=80)
+    st.image(image_path, width=80)
 
 st.markdown('<div class="sub-header">Upload an image to check if it is a <b>deepfake</b>.<br>Powered by FastAPI & AI</div>', unsafe_allow_html=True)
 
