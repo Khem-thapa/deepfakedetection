@@ -3,6 +3,8 @@
 
 import sys
 import os
+import numpy as np
+from logging import config
 
 # Add the parent of "src" to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -20,6 +22,7 @@ from sklearn.metrics import (
 
 from utils.mlflow_util import start_mlflow_run_with_logging
 from data.data_loader import get_data_generators
+from utils.dvc_utils import get_dvc_dataset_version
 
 def main():
 
@@ -43,12 +46,13 @@ def main():
     OUTPUT_DIR = config.get("output.OUTPUT_DIR_MESONET")
     IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
     CLASSES = config.get("data.CLASSES")  # e.g., ['real', 'fake']
-
+    RUN_NAME = config.get("mlflow.MESO4_RUN_NAME")
+    MODEL_NAME = config.get("mlflow.MESO4_MODEL_NAME")
+    
     # Step 1: Load Data & Data augmentation
-    # Use data generators for training and validation
     train_gen, val_gen = get_data_generators(data_dir=DATA_DIR,
-        target_size=IMAGE_SIZE,  # IMAGE_SIZE
-        batch_size=BATCH_SIZE,  # BATCH_SIZE
+        target_size=IMAGE_SIZE,  
+        batch_size=BATCH_SIZE,  
         classes=CLASSES  # real = 0, fake = 1
     )
 
@@ -72,12 +76,40 @@ def main():
     )
 
     # === Load dataset version from DVC ===
-    from utils.dvc_utils import get_dvc_dataset_version
     dataset_version = get_dvc_dataset_version("dataset.dvc")
+    
+    # === Train ===
+    history = model.train(
+        train_gen= train_gen, 
+        val_gen=val_gen, 
+        batch_size=BATCH_SIZE, 
+        epochs=EPOCHS,
+        callbacks=[checkpoint_cb, early_stop_cb]
+        )
 
+    # === Evaluate on validation set (for promotion criteria) ===
+    # Get predictions
+    y_probs = model.predict(val_gen, steps=len(val_gen), verbose=1).ravel()
+    y_pred = (y_probs > 0.5).astype("int32")  # get predictions as 0 or 1
+    y_val = val_gen.classes  # get true labels from validation generator
+
+
+    metrics = {
+    "val_accuracy": float(accuracy_score(y_val, y_pred)),
+    "val_precision": float(precision_score(y_val, y_pred, zero_division=0)),
+    "val_recall": float(recall_score(y_val, y_pred)),
+    "val_f1_score": float(f1_score(y_val, y_pred)),
+    "val_auc_score": float(roc_auc_score(y_val, y_probs))
+    }
+
+    # Round metrics to avoid precision issues
+    metrics = {k: round(v, 4) for k, v in metrics.items()}
+
+    # === Save final weights ===
+    model.save(MODEL_MESO4_WEIGHT)
+    model.save(MODEL_MESO4_FULL)
 
     # === MLflow Run ===
-    run_name="Meso4_Run"
     params={
         "model": str(model),
         "model_architecture": str(model),
@@ -109,59 +141,12 @@ def main():
     # Convert all non-string parameters to string for MLflow logging
     params = {k: str(v) if not isinstance(v, (int, float, str)) else v for k, v in params.items()}
 
- 
-    # === Train ===
-    history = model.train(train_gen= train_gen, val_gen=val_gen, batch_size=BATCH_SIZE, epochs=EPOCHS)
-    
-    # Get predicted probabilities in training set
-    y_probs_t = model.predict(train_gen, verbose=1)
-    y_pred_t = (y_probs_t > 0.5).astype("int32").flatten()
-
-    # True labels
-    y_train = train_gen.classes
-
-    # Compute metrics
-    t_acc = accuracy_score(y_train, y_pred_t)
-    t_prec = precision_score(y_train, y_pred_t, zero_division=0)
-    t_rec = recall_score(y_train, y_pred_t)
-    t_f1 = f1_score(y_train, y_pred_t)
-    t_auc = roc_auc_score(y_train, y_probs_t)
-
-    # === Predict on validation set and capturing the metrics===
-    y_probs = model.predict(val_gen, verbose=1)
-    y_pred = (y_probs > 0.5).astype("int32").flatten()  # get predictions as 0 or 1
-    y_val = val_gen.classes  # get true labels from validation generator
-
-    val_acc = accuracy_score(y_val, y_pred)
-    val_prec = precision_score(y_val, y_pred, zero_division=0)
-    val_rec = recall_score(y_val, y_pred)
-    val_f1 = f1_score(y_val, y_pred)
-    val_auc = roc_auc_score(y_val, y_probs)
-
-    metrics = {
-    "train_accuracy": t_acc,
-    "val_accuracy": val_acc,
-    "train_precision": t_prec,
-    "val_precision": val_prec,
-    "train_recall": t_rec,
-    "val_recall": val_rec,
-    "train_f1_score": t_f1,
-    "val_f1_score": val_f1,
-    "train_auc_score": t_auc,
-    "val_auc_score": val_auc
-    }
-
-
-    # === Save final weights (optional if checkpoint saves best) ===
-    model.save(MODEL_MESO4_WEIGHT)
-
-    # Save the model to the specified path
-    model.save(MODEL_MESO4_FULL)
 
    # MLflow run
     start_mlflow_run_with_logging( 
         experiment_name=EXPERIMENT_NAME, 
-        run_name= run_name, 
+        run_name= RUN_NAME, 
+        model_name=MODEL_NAME,
         params=params, 
         tags=tags, 
         history=history, 

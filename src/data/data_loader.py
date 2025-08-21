@@ -28,7 +28,8 @@ def get_data_generators(data_dir='dataset/openfaceforensic/', batch_size=50, tar
         batch_size=batch_size,  # BATCH_SIZE
         class_mode='binary',
         subset='training',
-        classes=classes
+        classes=classes,
+        shuffle=False
     )
 
     val_gen = datagen.flow_from_directory(
@@ -37,7 +38,8 @@ def get_data_generators(data_dir='dataset/openfaceforensic/', batch_size=50, tar
         batch_size=batch_size,  # BATCH_SIZE
         class_mode='binary',
         subset='validation',
-        classes=classes
+        classes=classes,
+        shuffle=False
     )
 
     return train_gen, val_gen

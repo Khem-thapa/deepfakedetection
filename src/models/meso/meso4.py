@@ -55,13 +55,14 @@ class Meso4Model:
 
     # Train the model
     # x_train: training data, y_train: training labels
-    def train(self, train_gen, val_gen, batch_size=32, epochs=10):
+    def train(self, train_gen, val_gen, batch_size=32, epochs=10, **kwargs):
         return self.model.fit(
             train_gen,
             validation_data= val_gen,
             batch_size=batch_size,
             epochs=epochs,
-            verbose=1
+            verbose=1,
+            **kwargs
         )
 
     # Evaluate the model

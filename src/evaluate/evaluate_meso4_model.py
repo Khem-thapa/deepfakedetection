@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -11,6 +12,10 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report, roc_auc_score
 )
+
+import mlflow
+from mlflow.tracking import MlflowClient
+import mlflow.keras
 
 # Add the parent of "src" to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -26,8 +31,10 @@ IMAGE_SIZE = tuple(config.get("data.IMAGE_SIZE"))
 FULL_MODEL = config.get("model.MODEL_MESO4_FULL")
 CLASSES = config.get("data.CLASSES")  # e.g., ['real', 'fake']
 BATCH_SIZE = config.get("train.BATCH_SIZE")
+RUN_NAME = config.get("mlflow.MESO4_RUN_NAME")
+MODEL_NAME = config.get("mlflow.MESO4_MODEL_NAME")
 
-base_path = os.path.abspath( os.path.join(os.getcwd(), 'dataset/test_openface'))
+base_path = os.path.abspath(os.path.join(os.getcwd(), 'dataset/test_openface'))
 print("Base path for evaluation data:", base_path)
 # === Load test data ===
 eval_gen = get_data_generators(
@@ -50,28 +57,26 @@ y_preds = (y_probs > 0.5).astype("int32").flatten()
 # True classes
 y_true = eval_gen.classes
 
-
 # === Metrics ===
-accuracy = accuracy_score(y_true, y_preds)
-precision = precision_score(y_true, y_preds)
-recall = recall_score(y_true, y_preds)
-f1 = f1_score(y_true, y_preds)
-auc = roc_auc_score(y_true, y_probs)  # Use probabilities for AUC
-
-import json
-
 metrics = {
-    "accuracy": accuracy,
-    "precision": precision,
-    "recall": recall,
-    "f1_score": f1,
-    "auc": auc
+    "accuracy": float(accuracy_score(y_true, y_preds)),
+    "precision": float(precision_score(y_true, y_preds)),
+    "recall": float(recall_score(y_true, y_preds)),
+    "f1_score": float(f1_score(y_true, y_preds)),
+    "auc": float(roc_auc_score(y_true, y_probs))
 }
 
-# Save metrics to JSON file
+# Round metrics to avoid precision issues
+metrics = {k: round(v, 4) for k, v in metrics.items()}
+
+print("Evaluation Metrics:")
+for key, value in metrics.items():
+    print(f"{key}: {value}")
+
+# Save metrics to JSON
 os.makedirs("results/evaluate", exist_ok=True)
 with open("results/evaluate/metrics.json", "w") as f:
-    json.dump(metrics, f)
+    json.dump(metrics, f, indent=2)
 
 # === Classification Report ===
 print("\nClassification Report:")
@@ -85,7 +90,122 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.tight_layout()
-
-# Save confusion matrix
 plt.savefig("results/evaluate/confusion_matrix.png")
-plt.show()
+plt.close()
+
+# === MLflow Logging & Promotion ===
+def safe_model_promotion(model_name, metrics, run_id, model_artifact):
+    """Safely handle model promotion with error handling"""
+    try:
+        client = MlflowClient()
+        
+        # Check current Production model
+        prod_versions = client.get_latest_versions(model_name, stages=["Production"])
+        prod_acc = 0.0
+        
+        if prod_versions:
+            prod_run = client.get_run(prod_versions[0].run_id)
+            prod_metrics = prod_run.data.metrics
+            prod_acc = prod_metrics.get("accuracy", 0.0)
+            
+            # Ensure it's a float, not a Metric object
+            if hasattr(prod_acc, 'value'):
+                prod_acc = float(prod_acc.value)
+            else:
+                prod_acc = float(prod_acc)
+
+        current_acc = metrics["accuracy"]
+        print(f"Current model accuracy: {current_acc}")
+        print(f"Production model accuracy: {prod_acc}")
+
+        # Compare and promote
+        if current_acc > prod_acc:
+            print(f"Promoting new model ({current_acc:.4f}) > Production ({prod_acc:.4f})")
+            
+            # Register model
+            model_uri = f"runs:/{run_id}/{model_artifact}"
+            reg_model = mlflow.register_model(model_uri, model_name)
+            
+            # Transition to Production
+            client.transition_model_version_stage(
+                name=model_name,
+                version=str(reg_model.version),  # Ensure version is string
+                stage="Production",
+                archive_existing_versions=True
+            )
+            print(f"Successfully promoted model version {reg_model.version} to Production")
+            return True
+        else:
+            print(f"New model ({current_acc:.4f}) <= Production ({prod_acc:.4f}), not promoting.")
+            return False
+            
+    except Exception as e:
+        print(f"Error during model promotion: {e}")
+        
+        # Try first-time registration
+        try:
+            print("Attempting first-time model registration...")
+            model_uri = f"runs:/{run_id}/{model_artifact}"
+            reg_model = mlflow.register_model(model_uri, model_name)
+            
+            client.transition_model_version_stage(
+                name=model_name,
+                version=str(reg_model.version),
+                stage="Production"
+            )
+            print(f"Successfully registered and promoted first model version {reg_model.version}")
+            return True
+            
+        except Exception as e2:
+            print(f"Failed to register model: {e2}")
+            print("Skipping model promotion due to errors.")
+            return False
+
+# === MLflow Logging ===
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow.set_experiment("eval_meso4_model")
+
+try:
+    with mlflow.start_run(run_name=f"evaluation_{RUN_NAME}") as run:
+        print(f"Started MLflow run: {run.info.run_id}")
+        
+        # Log metrics
+        for key, value in metrics.items():
+            mlflow.log_metric(key, value)
+        
+        # Log artifacts
+        mlflow.log_artifact("results/evaluate/metrics.json") # Metrics
+        mlflow.log_artifact("results/evaluate/confusion_matrix.png") # Confusion Matrix
+
+        # Log model with updated parameter name
+        try:
+            # Create a sample input for signature inference
+            sample_batch = next(iter(eval_gen))
+            sample_input = np.array(sample_batch[0][:1])  # Take first sample
+            
+            # Get model prediction for signature
+            sample_prediction = model.model.predict(sample_input)
+            
+            # Infer signature
+            from mlflow.models.signature import infer_signature
+            signature = infer_signature(sample_input, sample_prediction)
+            
+            # Log model with signature
+            mlflow.keras.log_model(
+                model.model, 
+                name="model",  # Keep this for now to avoid issues
+                signature=signature,
+                registered_model_name="Eval_Meso4_Model",
+            )
+            print("Model logged successfully")
+            
+            # Attempt model promotion
+            # safe_model_promotion(MODEL_NAME, metrics, run.info.run_id, "model")
+            
+        except Exception as model_error:
+            print(f"Error logging model: {model_error}")
+        
+except Exception as e:
+    print(f"MLflow logging failed: {e}")
+
+print("Evaluation complete!")

@@ -29,6 +29,10 @@ output:
 mlflow:
   EXPERIMENT_NAME_MESO: "Deepfake detection_mesonet"
   EXPERIMENT_NAME_EFFICIENTNET: "Deepfake detection_efficientnet"
+  MESO4_RUN_NAME: "Meso4_Run"
+  EFFICIENTNET_RUN_NAME: "efficientnet_v1"
+  MESO4_MODEL_NAME: "Meso4_Model"
+  EFFICIENTNET_MODEL_NAME: "EfficientNet_Model"
 
 parameters:
   OPTIMIZER: "adam"
