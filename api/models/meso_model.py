@@ -7,7 +7,7 @@ from src.models.meso.meso4 import Meso4Model
 
 def load_model():
     model = Meso4Model()
-    model.load('models/meso4/meso4_full_model.h5')
+    model.load('models/meso4/meso4.weights.h5')
     print("[INFO] Model Loaded!")
     return model
 

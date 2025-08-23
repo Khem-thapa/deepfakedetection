@@ -47,5 +47,7 @@ fakeavceleb/
 mlruns/
 mlartifacts/
 /datase
-/dataset
-models/meso4/meso4_full_model.h5
+/dataset 
+
+# ignore meso4 full model
+/models/meso4/meso4_full_model.h5

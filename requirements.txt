@@ -1,11 +1,49 @@
-numpy
-pandas
-matplotlib
-seaborn
-scikit-learn
-opencv-python
-tensorflow
-pyyaml
-mlflow
-dvc
-python-multipart
+# Core Data Science & Machine Learning
+numpy>=1.19.2
+pandas>=1.2.0
+matplotlib>=3.3.0
+seaborn>=0.11.0
+scikit-learn>=0.24.0
+tensorflow>=2.5.0
+keras>=2.5.0
+opencv-python>=4.5.0
+
+# Deep Learning & Image Processing
+pillow>=8.3.0
+torch>=1.9.0
+torchvision>=0.10.0
+albumentations>=1.0.0
+
+# MLOps & Experiment Tracking
+mlflow>=1.20.0
+dvc>=2.0.0
+wandb>=0.12.0
+
+# API & Web Framework
+fastapi>=0.68.0
+uvicorn>=0.15.0
+python-multipart>=0.0.5
+streamlit>=0.85.0
+requests>=2.26.0
+
+# Configuration & Utilities
+pyyaml>=5.4.0
+python-dotenv>=0.19.0
+tqdm>=4.62.0
+joblib>=1.0.0
+
+# Testing & Development
+pytest>=6.2.5
+pytest-asyncio>=0.15.0
+black>=21.7b0
+flake8>=3.9.0
+isort>=5.9.0
+
+# Documentation
+sphinx>=4.1.0
+sphinx-rtd-theme>=0.5.2
+
+# Other Dependencies
+aiofiles>=0.7.0
+python-jose[cryptography]>=3.3.0
+httpx>=0.18.0
