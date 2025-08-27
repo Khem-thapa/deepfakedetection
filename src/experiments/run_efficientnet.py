@@ -44,18 +44,18 @@ def main():
         history = model.fit(
             train_gen,
             validation_data=val_gen,
-            epochs=3,
+            epochs=5,
             callbacks=callbacks,
-            verbose=1
+            verbose=2
         )
         try:
             # Define experiment config
             EXPERIMENT_NAME = config.get("mlflow.EXPERIMENT_NAME_EFFICIENTNET")
             params = {
-                "input_shape": (128, 128, 3),
+                "input_shape": (224, 224, 3),
                 "optimizer": OPTIMIZER,
                 "loss": LOSS_FUNC,
-                "epochs": 3,
+                "epochs": 5,
                 "model_architecture": "EfficientNetB0"
             }
             tags = {
@@ -69,11 +69,26 @@ def main():
             model.save_weights(weights_path)
 
             # Get final metrics (last epoch)
+            # metrics = {
+            #     "val_accuracy": float(history.history['val_accuracy'][-1]),
+            #     "val_loss": float(history.history['val_loss'][-1]),
+            #     "train_accuracy": float(history.history['accuracy'][-1]),
+            #     "train_loss": float(history.history['loss'][-1]),
+            # }
+
+            from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
+            # Example: assuming you used Keras to predict
+            y_probs = model.predict(val_gen, verbose=1).flatten()
+            y_pred = (y_probs > 0.5).astype("int32")
+            y_val = val_gen.classes  # or np.array([...]) depending on your generator
+
             metrics = {
-                "val_accuracy": float(history.history['val_accuracy'][-1]),
-                "val_loss": float(history.history['val_loss'][-1]),
-                "train_accuracy": float(history.history['accuracy'][-1]),
-                "train_loss": float(history.history['loss'][-1]),
+                "val_accuracy": float(accuracy_score(y_val, y_pred)),
+                "val_precision": float(precision_score(y_val, y_pred, zero_division=0)),
+                "val_recall": float(recall_score(y_val, y_pred)),
+                "val_f1_score": float(f1_score(y_val, y_pred)),
+                "val_auc_score": float(roc_auc_score(y_val, y_probs)),
             }
 
             # MLflow run

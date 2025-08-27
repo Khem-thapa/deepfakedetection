@@ -1,7 +1,7 @@
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
-def get_data_generators(data_dir='dataset/openfaceforensic/', batch_size=8, target_size=(128, 128), classes=['real', 'fake']):
+def get_data_generators(data_dir='dataset/ef_openfaceforensic/', batch_size=16, target_size=(224, 224), classes=['real', 'fake']):
     """Create data generators for training and validation datasets.
     Args:
         data_dir (str): Directory containing the dataset.
@@ -27,7 +27,8 @@ def get_data_generators(data_dir='dataset/openfaceforensic/', batch_size=8, targ
         target_size=target_size,
         batch_size=batch_size,
         class_mode="binary",
-        subset="training"
+        subset="training",
+        shuffle=True
     )
 
     val_gen = train_datagen.flow_from_directory(
@@ -35,7 +36,8 @@ def get_data_generators(data_dir='dataset/openfaceforensic/', batch_size=8, targ
         target_size=target_size,
         batch_size=batch_size,
         class_mode="binary",
-        subset="validation"
+        subset="validation",
+        shuffle=False
     )
 
     return train_gen, val_gen

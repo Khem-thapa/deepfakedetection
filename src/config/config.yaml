@@ -9,8 +9,8 @@ data:
   CLASSES: ['real', 'fake']
 
 train:
-  EPOCHS: 10
-  BATCH_SIZE: 32
+  EPOCHS: 5
+  BATCH_SIZE: 16
 
 model:
   MODEL_MESO4_WEIGHT: "models/meso4/meso4.weights.h5"

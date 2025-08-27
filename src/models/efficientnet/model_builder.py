@@ -4,7 +4,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import tensorflow as tf
 
-def build_efficientnet_model(input_shape=(128, 128, 3), num_classes=1):
+def build_efficientnet_model(input_shape=(224, 224, 3), num_classes=1):
     """Builds an EfficientNetB0 model with a custom head for binary classification.
     Args:
         input_shape (tuple): Shape of the input images.
