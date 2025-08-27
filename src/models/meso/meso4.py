@@ -1,17 +1,27 @@
+from gc import callbacks
 from keras.models import Sequential
 from keras.layers import Conv2D, BatchNormalization, Activation, AveragePooling2D
-from keras.layers import Flatten, Dropout, Dense
+from keras.layers import Dropout, Dense, Flatten
 from keras.optimizers import Adam
+from keras.regularizers import l2
+import tensorflow as tf
 import numpy as np
 
 # Meso4Model: A Convolutional Neural Network for image classification
 # This model is designed to classify images into two categories (e.g., real vs fake).
 class Meso4Model:
-    def __init__(self, input_shape=(256, 256, 3), learning_rate=0.001):
+    def __init__(self, input_shape=(256, 256, 3), learning_rate=0.001, dropout_rate=0.3):
+        self.input_shape = input_shape
+        self.learning_rate = learning_rate
+        self.dropout_rate = dropout_rate
         self.model = self._build_model(input_shape)
-        self.model.compile(optimizer=Adam(learning_rate=learning_rate),
+        self.model.compile(optimizer=Adam(learning_rate=self.learning_rate),
                            loss='binary_crossentropy',
-                           metrics=['accuracy'])
+                           metrics=['accuracy', 
+                                    tf.keras.metrics.AUC(name='auc'), 
+                                    tf.keras.metrics.Precision(name='precision'), 
+                                    tf.keras.metrics.Recall(name='recall')
+                                    ])
 
     def _build_model(self, input_shape):
         # Build the Meso4 model architecture
