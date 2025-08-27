@@ -1,17 +1,17 @@
 {
     "run_name": "efficientnet_v1",
     "experiment_name": "Deepfake detection_efficientnet",
-    "timestamp": "2025-08-24 14:06:39",
-    "run_id": "2c28edecae9d4f268f3a3daee366d7e4",
+    "timestamp": "2025-08-27 14:07:15",
+    "run_id": "2916feac98114370a69fcc1e669e3563",
     "params": {
         "input_shape": [
-            128,
-            128,
+            224,
+            224,
             3
         ],
         "optimizer": "adam",
         "loss": "binary_crossentropy",
-        "epochs": 3,
+        "epochs": 5,
         "model_architecture": "EfficientNetB0"
     },
     "tags": {
@@ -20,10 +20,11 @@
         "framework": "tensorflow"
     },
     "metrics": {
-        "val_accuracy": 0.95025,
-        "val_loss": 0.142154,
-        "train_accuracy": 0.860625,
-        "train_loss": 0.328299
+        "val_accuracy": 0.97525,
+        "val_precision": 0.990201,
+        "val_recall": 0.96,
+        "val_f1_score": 0.974867,
+        "val_auc_score": 0.998345
     },
     "registered_model_name": "EfficientNet_Model",
     "model_logged": true
