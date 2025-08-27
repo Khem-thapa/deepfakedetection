@@ -24,6 +24,12 @@ st.markdown(
         text-align:center;
         margin-bottom:2em;
     }
+    .model-selector {
+        margin-bottom:2em;
+        padding:1em;
+        background-color:#f8f9fa;
+        border-radius:5px;
+    }
     .footer {
         position: fixed;
         left: 0;
@@ -51,6 +57,15 @@ with col2:
 
 st.markdown('<div class="sub-header">Upload an image to check if it is a <b>deepfake</b>.<br>Powered by FastAPI & AI</div>', unsafe_allow_html=True)
 
+# --- Model Selection ---
+st.markdown('<div class="model-selector">', unsafe_allow_html=True)
+model_type = st.radio(
+    "Select Deepfake Detection Model:",
+    ["MesoNet-4", "EfficientNet"],
+    help="Choose the model you want to use for detection"
+)
+st.markdown('</div>', unsafe_allow_html=True)
+
 # --- File uploader ---
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], help="Supported formats: jpg, jpeg, png")
 
@@ -62,19 +77,32 @@ if uploaded_file is not None:
         st.info("🔎 Detecting deepfake... Please wait.")
 
         files = {"file": (uploaded_file.name, img_bytes, uploaded_file.type)}
-        api_url = "http://localhost:8000/predict/"
+        
+        # Select API endpoint based on model choice
+        if model_type == "MesoNet-4":
+            api_url = "http://localhost:8000/predict/meso"
+        else:  # EfficientNet
+            api_url = "http://localhost:8000/predict/efficient"
+
+        # Make prediction request
         response = requests.post(api_url, files=files)
+        
         if response.status_code == 200:
             result = response.json()
             label = result.get("label", "Unknown")
             confidence = result.get("confidence", None)
+            
+            # Display result with model type
+            st.markdown(f"**Model Used:** {model_type}")
+            
             if confidence is not None:
+                confidence_text = f" (Confidence: {confidence:.2f}%)"
                 if label.lower() == "fake":
-                    st.error(f"🛑 Prediction: {label} (Confidence: {confidence:.2f})")
+                    st.error(f"🛑 Prediction: {label}{confidence_text}")
                 elif label.lower() == "real":
-                    st.success(f"✅ Prediction: {label} (Confidence: {confidence:.2f})")
+                    st.success(f"✅ Prediction: {label}{confidence_text}")
                 else:
-                    st.info(f"Prediction: {label} (Confidence: {confidence:.2f})")
+                    st.info(f"Prediction: {label}{confidence_text}")
             else:
                 st.info(f"Prediction: {label}")
         else:

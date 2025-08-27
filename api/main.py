@@ -7,8 +7,9 @@ from api.apis.predict import router as predict_router
 
 app = FastAPI(
     title="Deepfake Detection API",
-    description="API for detecting deepfake images using Meso4 model",
-    version="1.0.0"
+    description="API for detecting deepfake images using MesoNet-4 and EfficientNet models",
+    version="1.0.0",
+    docs_url="/docs"
 )
 
 app.include_router(predict_router, prefix="/predict", tags=["Prediction"])
