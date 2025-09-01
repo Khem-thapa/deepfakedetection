@@ -1,11 +1,8 @@
-# Option 1: Single Entry Point (app.py) - RECOMMENDED
-# Create this as your main app.py file
 
 import subprocess
 import threading
 import time
 import sys
-import os
 
 def start_api():
     """Start FastAPI server"""
