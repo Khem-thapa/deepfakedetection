@@ -98,11 +98,11 @@ if uploaded_file is not None:
             if confidence is not None:
                 confidence_text = f" (Confidence: {confidence:.2f}%)"
                 if label.lower() == "fake":
-                    st.error(f"🛑 Prediction: {label}{confidence_text}")
+                    st.error(f"🛑 Prediction: {label}")
                 elif label.lower() == "real":
-                    st.success(f"✅ Prediction: {label}{confidence_text}")
+                    st.success(f"✅ Prediction: {label}")
                 else:
-                    st.info(f"Prediction: {label}{confidence_text}")
+                    st.info(f"Prediction: {label}")
             else:
                 st.info(f"Prediction: {label}")
         else:

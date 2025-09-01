@@ -46,8 +46,9 @@ DFDC/
 fakeavceleb/
 mlruns/
 mlartifacts/
-/datase
-/dataset 
 
 # ignore meso4 full model
-/models/meso4/meso4_full_model.h5
+# /models/meso4/meso4_full_model.h5
+results/
+*.dvc
+start_app.bat

@@ -9,7 +9,7 @@ data:
   CLASSES: ['real', 'fake']
 
 train:
-  EPOCHS: 5
+  EPOCHS: 10
   BATCH_SIZE: 16
 
 model:

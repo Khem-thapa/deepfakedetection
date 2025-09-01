@@ -28,6 +28,7 @@ def get_data_generators(data_dir='dataset/ef_openfaceforensic/', batch_size=16, 
         batch_size=batch_size,
         class_mode="binary",
         subset="training",
+        classes=classes,
         shuffle=True
     )
 
@@ -37,6 +38,7 @@ def get_data_generators(data_dir='dataset/ef_openfaceforensic/', batch_size=16, 
         batch_size=batch_size,
         class_mode="binary",
         subset="validation",
+        classes=classes,
         shuffle=False
     )
 
