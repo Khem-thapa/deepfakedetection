@@ -61,6 +61,7 @@ jobs:
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
           client-secret: ${{ secrets.AZUREAPPSERVICE_CLIENTSECRET }}
       
       - name: 'Deploy to Azure Web App'
@@ -71,3 +72,4 @@ jobs:
           slot-name: 'Production'
           startup-file: 'app.py'  # Adjust to your main file
         timeout-minutes: 20  # Increase timeout for larger deployments
+
