@@ -29,7 +29,7 @@ jobs:
         run: |
           source python-env/bin/activate
           python -m pip install --upgrade pip
-          pip install -r requirements.txt 
+          pip install -r requirements.txt
       
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -48,7 +48,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      contents: read # This is required for actions/checkout
+      contents: read
     
     steps:
       - name: Download artifact from build job
@@ -59,10 +59,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
-          client-secret: ${{ secrets.AZUREAPPSERVICE_CLIENTSECRET }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -72,4 +69,3 @@ jobs:
           slot-name: 'Production'
           startup-file: 'app.py'  # Adjust to your main file
         timeout-minutes: 20  # Increase timeout for larger deployments
-
