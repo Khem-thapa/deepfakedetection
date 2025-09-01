@@ -37,3 +37,4 @@ jobs:
           app-name: 'deepfake'
           slot-name: 'Production'
           package: .
+
