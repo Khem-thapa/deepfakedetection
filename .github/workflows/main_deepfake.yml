@@ -30,6 +30,7 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_609E9E02AF9A47B08E8F558EA3C8A8C4 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_0C3704FDE08942F2AC3F1744CBEF235D }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8F6DD1092F7742CDB213BFF1A77A5C26 }}
+          client-secret: ${{secrets.AZUREAPPSERVICE_CLIENTSECRET}}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -37,5 +38,6 @@ jobs:
           app-name: 'deepfake'
           slot-name: 'Production'
           package: .
+
 
 
