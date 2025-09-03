@@ -21,7 +21,7 @@ import mlflow.keras
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from models.meso.meso4 import Meso4Model
-from data.eval_data_loader import get_data_generators
+from data.data_loader import get_data_generators
 from utils.config_loader import ConfigLoader
 
 # === Load configuration ===
@@ -37,7 +37,7 @@ MODEL_NAME = config.get("mlflow.MESO4_MODEL_NAME")
 base_path = os.path.abspath(os.path.join(os.getcwd(), 'dataset/test_openface'))
 print("Base path for evaluation data:", base_path)
 # === Load test data ===
-eval_gen = get_data_generators(
+_, eval_gen = get_data_generators(
     data_dir= base_path,
     target_size=IMAGE_SIZE,  # IMAGE_SIZE
     batch_size=BATCH_SIZE,  # BATCH_SIZE
@@ -74,8 +74,8 @@ for key, value in metrics.items():
     print(f"{key}: {value}")
 
 # Save metrics to JSON
-os.makedirs("results/evaluate", exist_ok=True)
-with open("results/evaluate/metrics.json", "w") as f:
+os.makedirs("results/evaluate/mesonet", exist_ok=True)
+with open("results/evaluate/mesonet/metrics.json", "w") as f:
     json.dump(metrics, f, indent=2)
 
 # === Classification Report ===
@@ -90,7 +90,7 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.tight_layout()
-plt.savefig("results/evaluate/confusion_matrix.png")
+plt.savefig("results/evaluate/mesonet/confusion_matrix.png")
 plt.close()
 
 # === MLflow Logging & Promotion ===
@@ -174,8 +174,8 @@ try:
             mlflow.log_metric(key, value)
         
         # Log artifacts
-        mlflow.log_artifact("results/evaluate/metrics.json") # Metrics
-        mlflow.log_artifact("results/evaluate/confusion_matrix.png") # Confusion Matrix
+        mlflow.log_artifact("results/evaluate/mesonet/metrics.json") # Metrics
+        mlflow.log_artifact("results/evaluate/mesonet/confusion_matrix.png") # Confusion Matrix
 
         # Log model with updated parameter name
         try:

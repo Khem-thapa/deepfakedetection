@@ -19,7 +19,9 @@ OPTIMIZER = config.get("parameters.OPTIMIZER")  # e.g., 'adam'
 LOSS_FUNC = config.get("parameters.LOSS_FUNC")  # e.g., 'binary_crossentropy'
 RUN_NAME = config.get("mlflow.EFFICIENTNET_RUN_NAME")
 MODEL_NAME = config.get("mlflow.EFFICIENTNET_MODEL_NAME")
-
+EPOCHS = config.get("train.EPOCHS")
+BATCH_SIZE = config.get("train.BATCH_SIZE")
+DATA_DIR = config.get("data.DATA_DIR_EFFICIENT")
 
 def main():
     try:
@@ -30,21 +32,21 @@ def main():
         os.makedirs(os.path.dirname(weights_path), exist_ok=True)
 
         # Load data generators
-        train_gen, val_gen = get_data_generators()
-        
+        train_gen, val_gen = get_data_generators(data_dir=DATA_DIR, batch_size=BATCH_SIZE)
+
         model = build_efficientnet_model()
 
         callbacks = [
             EarlyStopping(monitor="val_loss", patience=5, restore_best_weights=True),
             ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=2, verbose=1),
-            ModelCheckpoint(filepath="models/efficientnet/efficient_model.keras", monitor="val_auc", save_best_only=True, mode="max")
+            ModelCheckpoint(filepath="models/efficientnet/efficientnet_model.keras", monitor="val_auc", save_best_only=True, mode="max")
         ]
         
         # Train the model
         history = model.fit(
             train_gen,
             validation_data=val_gen,
-            epochs=5,
+            epochs=EPOCHS,
             callbacks=callbacks,
             verbose=2
         )
@@ -52,10 +54,12 @@ def main():
             # Define experiment config
             EXPERIMENT_NAME = config.get("mlflow.EXPERIMENT_NAME_EFFICIENTNET")
             params = {
+                "epochs": EPOCHS,
+                "batch_size": BATCH_SIZE,
                 "input_shape": (224, 224, 3),
                 "optimizer": OPTIMIZER,
                 "loss": LOSS_FUNC,
-                "epochs": 5,
+                "data_dir": DATA_DIR,
                 "model_architecture": "EfficientNetB0"
             }
             tags = {

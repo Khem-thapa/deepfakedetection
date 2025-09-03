@@ -1,23 +1,19 @@
 data:
-  FAKE_DIR: "dataset/openfaceforensic/fake/"
-  REAL_DIR: "dataset/openfaceforensic/real/"
-  TEST_FAKE_DIR: "dataset/test/fake/"
-  TEST_REAL_DIR: "dataset/test/real/"
-  DATA_DIR: "dataset/openfaceforensic"
+  DATA_DIR_MESO: "dataset/openfaceforensic"
+  DATA_DIR_EFFICIENT: "dataset/ef_openfaceforensic"
   IMAGE_SIZE: [256, 256]
   INPUT_SHAPE: [256, 256, 3]
   CLASSES: ['real', 'fake']
 
 train:
-  EPOCHS: 10
+  EPOCHS: 1
   BATCH_SIZE: 16
 
 model:
   MODEL_MESO4_WEIGHT: "models/meso4/meso4.weights.h5"
   MODEL_MESO4_FULL: "models/meso4/meso4_full_model.h5"
-  MODEL_MESO4_OPT_FULL: "models/meso4/meso4_opt_full_model.h5"
-  MODEL_EFFICIENTNET_FULL: "models/efficientnet/efficient_model.h5"
-  MODEL_EFFICIENTNET_WEIGHT: "models/efficientnet/efficient_model.weights.h5"
+  MODEL_EFFICIENTNET_FULL: "models/efficientnet/efficientnet_model.h5"
+  MODEL_EFFICIENTNET_WEIGHT: "models/efficientnet/efficientnet_model.weights.h5"
 
 output:
   RESULT_DIR: "results"

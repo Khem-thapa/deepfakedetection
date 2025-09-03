@@ -6,17 +6,17 @@ stages:
       - src/experiments/run_mesonet.py
       - dataset/openfaceforensic
     outs:
-      - models/meso4/meso4_full_model.h5
+      - models/meso4/meso4.weights.h5
 
   # Meso4Net Evaluation
   evaluate_meso4:
     cmd: python src/evaluate/evaluate_meso4_model.py
     deps:
-      - models/meso4/meso4_full_model.h5
+      - models/meso4/meso4.weights.h5
       - src/evaluate/evaluate_meso4_model.py
       - dataset/test_openface
     metrics:
-      - results/evaluate/meso4_metrics.json
+      - results/evaluate/mesonet/metrics.json
 
   # EfficientNet Training
   train_efficientnet:
@@ -25,14 +25,14 @@ stages:
       - src/experiments/run_efficientnet.py
       - dataset/ef_openfaceforensic
     outs:
-      - models/efficientnet/efficientnet_model.h5
+      - models/efficientnet/efficientnet_model.weights.h5
 
   # EfficientNet Evaluation
   evaluate_efficientnet:
     cmd: python src/evaluate/evaluate_efficientnet_model.py
     deps:
-      - models/efficientnet/efficientnet_model.h5
+      - models/efficientnet/efficientnet_model.weights.h5
       - src/evaluate/evaluate_efficientnet_model.py
       - dataset/test_openface
     metrics:
-      - results/evaluate/efficientnet_metrics.json
+      - results/evaluate/efficientnet/metrics.json

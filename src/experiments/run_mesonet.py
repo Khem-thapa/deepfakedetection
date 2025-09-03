@@ -29,17 +29,12 @@ def main():
     # === Load config ===
     config = ConfigLoader("src/config/config.yaml")
 
-    REAL_DIR = config.get("data.REAL_DIR")
-    FAKE_DIR = config.get("data.FAKE_DIR")
-    DATA_DIR = config.get("data.DATA_DIR")
-
+    DATA_DIR = config.get("data.DATA_DIR_MESO")
     EPOCHS = config.get("train.EPOCHS")
     BATCH_SIZE = config.get("train.BATCH_SIZE")
 
     MODEL_MESO4_WEIGHT =  config.get("model.MODEL_MESO4_WEIGHT")
     MODEL_MESO4_FULL = config.get("model.MODEL_MESO4_FULL")
-
-
     EXPERIMENT_NAME = config.get("mlflow.EXPERIMENT_NAME_MESO")
     
     MODEL_PATH = config.get("output.MODELS_PATH")
@@ -111,30 +106,16 @@ def main():
 
     # === MLflow Run ===
     params={
-        "model": str(model),
-        "model_architecture": str(model),
         "epochs": EPOCHS,
         "batch_size": BATCH_SIZE,
         "model_save_path": MODEL_MESO4_WEIGHT,
         "checkpoint_callback": str(checkpoint_cb),
         "early_stopping_callback": str(early_stop_cb),
         "MODEL_PATH": MODEL_PATH,
-        "real_dir": REAL_DIR,
-        "fake_dir": FAKE_DIR,
         "image_size": IMAGE_SIZE,  # IMAGE_SIZE
         "dataset_version": dataset_version,
         "data_dir": DATA_DIR,
-        "train_generator": str(train_gen),
-        "val_generator": str(val_gen),
-        "train_generator_samples": train_gen.samples,
-        "val_generator_samples": val_gen.samples,
-        "train_generator_classes": train_gen.classes,
-        "val_generator_classes": val_gen.classes,
-        "train_generator_class_indices": train_gen.class_indices,
-        "val_generator_class_indices": val_gen.class_indices,
-        "train_generator_image_shape": train_gen.image_shape,
-        "val_generator_image_shape": val_gen.image_shape,
-        "train_generator_batch_size": train_gen.batch_size,
+        "class_indices": val_gen.class_indices
     }
     tags={"script": "run_experiment", "stage": "training", "use_case": "Deepfake Detection", "model": "Meso4", "dataset_version": dataset_version}
 

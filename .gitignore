@@ -52,3 +52,4 @@ mlartifacts/
 results/
 *.dvc
 start_app.bat
+models_backup/

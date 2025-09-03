@@ -38,3 +38,79 @@ stages:
       hash: md5
       md5: e78ea77a933950251bdcb371e7c6e18f
       size: 112
+  train_meso4:
+    cmd: python src/experiments/run_mesonet.py
+    deps:
+    - path: dataset/openfaceforensic
+      hash: md5
+      md5: a50d20b981a7721c97b92cae96e9c813.dir
+      size: 367322771
+      nfiles: 40000
+    - path: src/experiments/run_mesonet.py
+      hash: md5
+      md5: 48863be5a3517f5f6ed235015f414fd5
+      size: 4820
+    outs:
+    - path: models/meso4/meso4.weights.h5
+      hash: md5
+      md5: 184901b27a5c668e2fdbb1ad36dc98f5
+      size: 410144
+  evaluate_meso4:
+    cmd: python src/evaluate/evaluate_meso4_model.py
+    deps:
+    - path: dataset/test_openface
+      hash: md5
+      md5: 67be9c3807026850856eb0285e425b87.dir
+      size: 103545221
+      nfiles: 10000
+    - path: models/meso4/meso4.weights.h5
+      hash: md5
+      md5: 184901b27a5c668e2fdbb1ad36dc98f5
+      size: 410144
+    - path: src/evaluate/evaluate_meso4_model.py
+      hash: md5
+      md5: 27452ae9c44c0afd3c84d848317717df
+      size: 7469
+    outs:
+    - path: results/evaluate/mesonet/metrics.json
+      hash: md5
+      md5: 784d757716a6fb3bed319f08e50bf78b
+      size: 110
+  train_efficientnet:
+    cmd: python src/experiments/run_efficientnet.py
+    deps:
+    - path: dataset/ef_openfaceforensic
+      hash: md5
+      md5: 602c94168a95e5bcf743a2e0bc219f0a.dir
+      size: 182779325
+      nfiles: 20000
+    - path: src/experiments/run_efficientnet.py
+      hash: md5
+      md5: cee0c2d68722d208981aa25e2dd2c744
+      size: 4951
+    outs:
+    - path: models/efficientnet/efficientnet_model.weights.h5
+      hash: md5
+      md5: 7d5ede5813a15d8bee59b19fd97a7e10
+      size: 50973576
+  evaluate_efficientnet:
+    cmd: python src/evaluate/evaluate_efficientnet_model.py
+    deps:
+    - path: dataset/test_openface
+      hash: md5
+      md5: 67be9c3807026850856eb0285e425b87.dir
+      size: 103545221
+      nfiles: 10000
+    - path: models/efficientnet/efficientnet_model.weights.h5
+      hash: md5
+      md5: 7d5ede5813a15d8bee59b19fd97a7e10
+      size: 50973576
+    - path: src/evaluate/evaluate_efficientnet_model.py
+      hash: md5
+      md5: 58cb803878abbe3d974f60be03929569
+      size: 4381
+    outs:
+    - path: results/evaluate/efficientnet/metrics.json
+      hash: md5
+      md5: 1acbdd6f15bb005c90a6a0ba92a70167
+      size: 109
