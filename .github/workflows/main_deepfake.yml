@@ -43,7 +43,7 @@ jobs:
             echo "Error: models directory not found"
             exit 1
           fi
-          if [ ! -f "models/efficientnet/efficient_model.h5" ]; then
+          if [ ! -f "models/efficientnet/efficientnet_model.h5" ]; then
             echo "Error: EfficientNet model file not found"
             exit 1
           fi
