@@ -1,20 +1,9 @@
-# Core Runtime
-numpy
-pandas
-scikit-learn
-tensorflow  # keep if your model is TF
-torch       # keep only if your model is PyTorch
-torchvision # same as above
-pillow
-opencv-python
+# Core dependencies
+streamlit>=1.24.0  # For the web interface
+pillow>=8.3.0     # For image processing
+tensorflow>=2.5.0  # For loading and running models
+numpy>=1.19.2     # For array operations
 
-# API & Frontend
-fastapi
-uvicorn
-python-multipart
-streamlit
-requests
-
-# Utilities
-python-dotenv
-aiofiles
+# Optional: Better CPU/GPU support for TensorFlow
+# Comment out if not needed
+tensorflow-io-gcs-filesystem>=0.23.1  # For TensorFlow I/O operations
