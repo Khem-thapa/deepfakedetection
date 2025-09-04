@@ -81,8 +81,8 @@ stages:
     deps:
     - path: dataset/ef_openfaceforensic
       hash: md5
-      md5: 602c94168a95e5bcf743a2e0bc219f0a.dir
-      size: 182779325
+      md5: 4bbf505256fddd7ca04dba2f074e78c6.dir
+      size: 181955050
       nfiles: 20000
     - path: src/experiments/run_efficientnet.py
       hash: md5
@@ -91,7 +91,7 @@ stages:
     outs:
     - path: models/efficientnet/efficientnet_model.weights.h5
       hash: md5
-      md5: 7d5ede5813a15d8bee59b19fd97a7e10
+      md5: bd166459f6ac25e923b05444b01b6b2a
       size: 50973576
   evaluate_efficientnet:
     cmd: python src/evaluate/evaluate_efficientnet_model.py
@@ -103,7 +103,7 @@ stages:
       nfiles: 10000
     - path: models/efficientnet/efficientnet_model.weights.h5
       hash: md5
-      md5: 7d5ede5813a15d8bee59b19fd97a7e10
+      md5: bd166459f6ac25e923b05444b01b6b2a
       size: 50973576
     - path: src/evaluate/evaluate_efficientnet_model.py
       hash: md5
@@ -112,5 +112,5 @@ stages:
     outs:
     - path: results/evaluate/efficientnet/metrics.json
       hash: md5
-      md5: 1acbdd6f15bb005c90a6a0ba92a70167
-      size: 109
+      md5: 744fd00739346774c3ecf8d5c65991c0
+      size: 111

@@ -19,6 +19,7 @@ def build_efficientnet_model(input_shape=(224, 224, 3), num_classes=1):
         weights="imagenet",
         input_tensor=Input(shape=input_shape)
     )
+    base_model.trainable = False
     
     # Unfreeze all layers for fine-tuning
     for layer in base_model.layers:

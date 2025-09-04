@@ -16,10 +16,14 @@ def get_data_generators(data_dir, batch_size, target_size=(224, 224), classes=['
     train_datagen = ImageDataGenerator(
         preprocessing_function=preprocess_input,
         rotation_range=15,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
         horizontal_flip=True,
-        validation_split=0.2   # 80/20 train-val split
+        brightness_range=[0.7, 1.2],
+        validation_split=0.2,   # 80/20 train-val split
+        fill_mode='nearest',
+        zoom_range=0.2,
+        shear_range=0.2
     )
 
     train_gen = train_datagen.flow_from_directory(

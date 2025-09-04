@@ -6,7 +6,7 @@ import numpy as np
 import sys
 import os
 current_dir = os.path.dirname(__file__)
-model_path_eff = os.path.join(current_dir, "models/efficientnet/", "efficient_model.h5")
+model_path_eff = os.path.join(current_dir, "models/efficientnet/", "efficientnet_model.h5")
 model_path_meso = os.path.join(current_dir, "models/meso4/", "meso4_full_model.h5")
 
 # process image for mesonet
@@ -42,9 +42,13 @@ def load_model_eff():
     """
     Load the EfficientNet model for deepfake detection
     """
-    # model = tf_load_model(model_path)
-    model = tf.keras.models.load_model(model_path_eff, compile=False)
-    return model
+    try:
+        model = tf.keras.models.load_model(model_path_eff, compile=False)
+        return model
+    except Exception as e:
+        print(f"[ERROR] Failed to load EfficientNet model: {e}")
+        raise e
+
 
 # --- Streamlit App ---
 # --- Custom CSS for style ---
@@ -124,10 +128,15 @@ if uploaded_file is not None:
         # Select API endpoint based on model choice
         if model_type == "MesoNet-4":
             preprocessed = preprocess_image(image)
-            prediction =  load_model_meso().predict(preprocessed)[0][0]
+            prediction = load_model_meso().predict(preprocessed)[0][0]
         else:  # EfficientNet
             preprocessed = preprocess_image_ef(image)
-            prediction = load_model_eff().predict(preprocessed)[0][0]
+            try:
+                prediction = load_model_eff().predict(preprocessed)[0][0]
+            except Exception as e:
+                print(f"[ERROR] Failed to predict with EfficientNet model: {e}")
+                preprocessed = preprocess_image(image)
+                prediction = load_model_meso().predict(preprocessed)[0][0]
 
         # Check for prediction
         label = "Fake" if prediction> 0.6 else "Real" 
