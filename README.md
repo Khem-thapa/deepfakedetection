@@ -6,32 +6,68 @@ This project provides an end-to-end solution for detecting deepfake images using
 
 ```
 Application/
+│── Api/                       # FastAPI backend
+│   ├── Apis/
+│   │   └── predict.py          # Endpoint for prediction requests
+│   ├── models/
+│   │   ├── efficient_model.py  # Wrapper for EfficientNet model loading/inference
+│   │   └── meso_model.py       # Wrapper for Meso4Net model loading/inference
+│   ├── utils/
+│   │   └── preprocess.py       # Preprocessing utilities for API input
+│   ├── main.py                 # API entry point
+│   └── serve.py                # API serving script
 │
-├── api/                # FastAPI backend for deepfake detection
-│   ├── apis/           # API route definitions
-│   ├── models/         # Model loading and prediction code
-│   ├── utils/          # Preprocessing utilities
-│   └── main.py         # FastAPI app entry point
+│── frontend/                   # Streamlit-based frontend application
+│   └── streamlit_app.py        # User interface for uploading and testing images
 │
-├── frontend/           # Streamlit UI for user interaction
-│   ├── images/         # UI logos and icons
-│   └── streamlit_app.py# Streamlit app
+│── src/                        # Core training and evaluation modules
+│   ├── config/
+│   │   └── config.yaml         # Centralized configuration file
+│   ├── data/
+│   │   ├── data_loader.py      # Data preprocessing for Meso4Net
+│   │   └── eff_data_loader.py  # Data Preprocessing for EfficientNet
+│   ├── evaluate/
+│   │   ├── evaluate_efficient_model.py # Evaluation script for EfficientNet
+│   │   └── evaluate_meso4_model.py     # Evaluation script for Meso4Net
+│   ├── experiments/
+│   │   ├── run_efficientnet.py  # Training script for EfficientNet
+│   │   └── run_mesonet.py       # Training script for Meso4Net
+│   ├── models/
+│   │   ├── efficientnet/
+│   │   │   └── model_builder.py # EfficientNet model architecture definition
+│   │   └── meso/
+│   │       └── meso4.py         # Meso4Net model architecture definition
+│   ├── predict/
+│   │   ├── predict_efficientnet.py # Inference script for EfficientNet trained model
+│   │   └── predict_mesonet.py      # Inference script for Meso4Net trained model
+│   └── utils/
+│       ├── config_loader.py     # Utility to parse config.yaml
+│       ├── dvc_utils.py         # Helper functions for DVC integration
+│       ├── metrics_logger.py    # Custom metric logging utilities
+│       ├── mlflow_logger.py     # MLflow logging wrapper
+│       └── mlflow_util.py       # Helper functions for MLflow operations
 │
-├── src/                # Core ML code, experiments, and utilities
-│   ├── config/         # Configuration files (e.g., config.yaml)
-│   ├── data/           # Data loaders for training and evaluation
-│   ├── evaluate/       # Model evaluation scripts
-│   ├── experiments/    # Experiment runner scripts for different models
-│   ├── models/         # Model architectures (e.g., EfficientNet, MesoNet)
-│   ├── predict/        # Prediction scripts for different models
-│   └── utils/          # Utility modules (config loader, logging, DVC, etc.)
+│── app.py                       # Streamlit IU application direct with both API calls
+│── start_app.bat                # Batch script to start both API and UI
+│── dataset/                     # Dataset directory (tracked with DVC)
+│── results/                     # Results and logs
+│   ├── evaluate/                # Evaluation reports
+│   └── mlflow_logs/             # MLflow experiment logs
+│── .dvcignore                   # Ignore rules for DVC
+│── .gitignore                   # Ignore rules for Git
+│── dataset.dvc                  # DVC-tracked dataset file
+│── dvc.lock                     # Lock file for DVC pipeline
+│── dvc.yaml                     # DVC pipeline definition
+│── requirements.txt             # List of required dependencies
+│── startup.sh                   # Startup script for deployment into linux server
+│── README.md                    # Project documentation file
+│── .github/
+│   └── Workflow/
+│       └── Main_deepfake.yaml   # GitHub Actions CI/CD workflow
 │
-├── models/             # Saved and exported model weights/checkpoints
-├── results/            # Evaluation results, predictions, and output artifacts
-├── start_app.bat       # Batch file to start both API and UI
-│
-├── requirements.txt    # Python dependencies
-└── README.md           # Project documentation
+│── artifacts/                   # MLflow artifact storage (generated automatically)
+│── mlruns/                      # MLflow experiment logs and runs
+
 ```
 ## Models and Results Folders
 
